@@ -22,5 +22,6 @@ void loop() {
       }
       Serial.println(); // Print out of id is complete.
     }
+    delay(3000);
   }
 }
