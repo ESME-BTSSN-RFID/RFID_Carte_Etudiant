@@ -1,6 +1,7 @@
 import serial
 import time
 import mysql.connector
+import argparse
 
 
 def connection():
