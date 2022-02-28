@@ -5,7 +5,6 @@ if (isset($_SESSION['idCand'])){
     $idCand = $_SESSION['idCand'];
     $cnx=Connexion("localhost", "projet_btssnir", "root", "");
     if($idCand==0){
-        /*$req = "SELECT * FROM utilisateur ";*/
         $req="SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;";
         $result=requeteSelect($cnx, $req);
     }

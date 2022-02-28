@@ -1,20 +1,18 @@
 <?php
 require_once('Modele.php');
 
-$idCand=$_POST['idCand'];
+$idCand=$_POST['idCarteEtudiant'];
 
 if(!empty($idCand)){
     $cnx= Connexion("localhost", "projet_btssnir", "root", "");
     
-    $req="DELETE FROM resultat WHERE idCand=$idCand";
-    $result=requeteSelect($cnx, $req);
-    $req = "DELETE FROM candidat WHERE idCand= '$idCand'";
+    $req = "DELETE FROM eleve WHERE idCarteEtudiant= '$idCand'";
     $result=requeteSelect($cnx, $req);
     
-    header("Location: ../PAGES/Visu_tab_IC.php?succes=Une ligne supprimée");
+    header("Location: ../PAGES/Visu_tab_IC.php?succes=Donnée de l'étudiant supprimée avec succès");
 }
 else {
-    header("Location: ../PAGES/Supprimer.php?error=Veuillez sélectionner un candidat");
+    header("Location: ../PAGES/Supprimer.php?error=Veuillez sélectionner un étudiant");
 }
 
 
