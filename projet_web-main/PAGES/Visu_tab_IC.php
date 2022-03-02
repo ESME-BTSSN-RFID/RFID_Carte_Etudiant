@@ -20,7 +20,7 @@ if (isset($_SESSION['idCand'])){
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&ampdisplay=swap" rel="stylesheet"> 
-    <title>Infos Candidats</title>
+    <title>Liste</title>
     <link rel="stylesheet" href="../CSS/style_visu3.css">
     <link rel="icon" href="../favicon.png ">
 </head>
@@ -44,8 +44,19 @@ if (isset($_SESSION['idCand'])){
             else{
                 ?><a href="Visu_tab_IC.php">Informations</a><?php
             }?>
-  
-            <a href="Visu_tab_R.php">Résultat</a>
+
+            <div class="dropdown">
+                <button class="dropbtn">Menu cours
+                <i class="arrow down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="Visu_tab_R.php">Emploi du temps</a>
+                    <a href="ajoutSeance.php">Ajouter une séance</a>
+                    <a href="Resultat_Modifier.php">Modifier les séances</a>
+                    <a href="suppr_seance.php">Supprimer une séance</a>
+                </div>
+            </div>
+
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>

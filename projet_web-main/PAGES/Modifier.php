@@ -41,7 +41,17 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
                 ?><a href="Visu_tab_IC.php">Informations</a><?php
             }?>
   
-            <a href="Visu_tab_R.php">Résultat</a>
+            <div class="dropdown">
+                <button class="dropbtn">Menu cours
+                <i class="arrow down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="Visu_tab_R.php">Emploi du temps</a>
+                    <a href="ajoutSeance.php">Ajouter une séance</a>
+                    <a href="Resultat_Modifier.php">Modifier les séances</a>
+                    <a href="suppr_seance.php">Supprimer une séance</a>
+                </div>
+            </div>
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>
@@ -49,7 +59,7 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
     <form action="../SCRIPTS/update.php" method="GET"> 
         <table class="mod">
             <tr>
-                <th>Carte étudiant</th>
+                <th>Etudiant</th>
                 <th>Nouveau nom</th>
                 <th>Nouveau prénom</th>
                 <th>Classe</th>

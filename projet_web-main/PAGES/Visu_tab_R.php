@@ -1,8 +1,17 @@
 <?php
 session_start();
 include_once('../SCRIPTS/Modele.php');
-if (isset($_SESSION['idCarteEtudiant'])){
-    $idCarteEtudiant = $_SESSION['idCarteEtudiant'];
+if (isset($_SESSION['idCand'])){
+    $idCand = $_SESSION['idCand'];
+    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+    if($idCand==0){
+        $req="SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;";
+        $result=requeteSelect($cnx, $req);
+    }
+    else{
+        $req = "SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;"; 
+        $result=requeteSelect($cnx, $req);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -10,22 +19,23 @@ if (isset($_SESSION['idCarteEtudiant'])){
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&ampdisplay=swap" rel="stylesheet"> 
-    <title>Notes</title>
+    <title>Emploi du temps</title>
     <link rel="stylesheet" href="../CSS/style_visu3.css">
     <link rel="icon" href="../favicon.png ">
 </head>
 <body>
     <header>
         <nav>
-            <?php if($idCarteEtudiant==0){?>
+            <?php if($idCand==0){?>
             <div class="dropdown">
-                <button class="dropbtn">Candidat
+                <button class="dropbtn">Menu étudiant
                 <i class="arrow down"></i>
                 </button>
                 <div class="dropdown-content">
-                    <a href="Visu_tab_IC.php">Liste des Candidats</a>
-                    <a href="Ajouter.php">Ajouter un candidat</a>
-                    <a href="Supprimer.php">Supprimer un candidat</a>
+                    <a href="Visu_tab_IC.php">Liste des étudiants</a>
+                    <a href="Ajouter.php">Ajouter un étudiant</a>
+                    <a href="Modifier.php">Modifier les informations d'un étudiant</a>
+                    <a href="Supprimer.php">Supprimer un étudiant</a>
                 </div>
             </div> 
             <?php
@@ -34,69 +44,81 @@ if (isset($_SESSION['idCarteEtudiant'])){
                 ?><a href="Visu_tab_IC.php">Informations</a><?php
             }?>
   
-            <a href="Visu_tab_R.php">Résultat</a>
+            <div class="dropdown">
+                <button class="dropbtn">Menu cours
+                <i class="arrow down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="Visu_tab_R.php">Emploi du temps</a>
+                    <a href="ajoutSeance.php">Ajouter une séance</a>
+                    <a href="Resultat_Modifier.php">Modifier les séances</a>
+                    <a href="suppr_seance.php">Supprimer une séance</a>
+                </div>
+            </div>
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>
 
     <section>
-        <table class="tableau">
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Anglais</th>
-                <th>Culture générale</th>
-                <th>Français</th>
-                <th>Informatique</th>
-                <th>Mathématiques</th>
-                <th>Physique</th>
-                <th>Moyenne</th>
-            </tr>
-
-
             <?php
                 $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-                if ($idCarteEtudiant==0) {
-                    $req="SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve WHERE idCarteEtudiant!=0";
-                }
-                else {
-                    $req="SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve WHERE idCarteEtudiant='$idCarteEtudiant'";
-                }
-                
-                $candidat=requeteSelect($cnx, $req);
+                $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
+                $result=requeteSelect($cnx, $req);?>
 
-                foreach($eleve as $ligne){
-                    $req="SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve c INNER JOIN classe r ON c.idClasse=r.idClasse WHERE c.idCarteEtudiant !=0 AND c.idCarteEtudiant=$ligne[0]";
-                    $result=requeteSelect($cnx, $req);
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                        <?php
+                            foreach($result as $ligne){
+                            $date = substr($ligne['heureDebut'], 0, 10);
+                            $timestamp = strtotime($date);
+                            $day = date('l', $timestamp);
+                            var_dump($day);
+                            $debut = substr($ligne['heureDebut'], 11);
+                            $fin = substr($ligne['heureFin'], 11);
+                            $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');
+                        }
                     
-                    echo "<tr><td>".$ligne['nom']."</td><td>".$ligne['Prenoms']."</td>";
-                    $moyenne=0;
-                    $somme=0;
+                            $jour = array(null, "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
+                            $rdv["Dimanche"]["16"] = "Maths";
+                            $rdv["Lundi"]["8"] = "Anglais";
+                            echo "<tr><th>Heure</th>";
+                            for($x = 1; $x < 8; $x++)
+                                echo "<th>".$jour[$x]."</th>";
+                            echo "</tr>";
+                            for($j = 8; $j < 19; $j += 2) {
+                                echo "<tr>";
+                                for($i = 0; $i < 7; $i++) {
+                                    if($i == 0) {
+                                        $heure = str_replace(".2", ":00", $j);
+                                        echo "<td class=\"time\">".$heure."</td>";
+                                    }
+                                    echo "<td>";
+                                    if(isset($rdv[$jour[$i+1]][$heure])) {
+                                        echo $rdv[$jour[$i+1]][$heure];
+                                    }
+                                    echo "</td>";
+                                }
+                                echo "</tr>";
+                            }
+                        ?>
+                </tr>
+                    </table>
+                                
+                    <?php $candidat=requeteSelect($cnx, $req);
 
-                    foreach($result as $value){
-                        echo "<td>".$value['note']."</td>";
-                        
-                        $moyenne+=$value['note']*$value['coef'];
-                        $somme+=$value['coef'];
-                    }
-                    echo "<td>".round($moyenne/$somme,2)."</td>";
-                    if ($idCarteEtudiant==0) {
-                        echo "<td><a href='Resultat_Modifier.php?idCarteEtudiant=$ligne[0]'>Modifier</a></td>";
-                    }
-                    echo "</tr>";
-                    
-                }
-            ?>
-        </table>
-        <?php if (isset($_GET['succes'])){ ?>
-     		<p class="succes"><?php echo $_GET['succes']; ?></p>
-     	    <?php } ?>
-    </section>
-</body>
-</html>
+                            
+                    if (isset($_GET['succes'])){ ?>
+                            <?php echo "test 1"; ?>
+                            <p class="succes"><?php echo $_GET['succes']; ?></p>
+                            <?php echo "test 2"; ?>
+                            <?php } ?>
+                    </section>
+                </body>
+                </html>
 <?php
 }else{
     header("Location: ../PAGES/index.php");
+    echo "test 3";
     exit();
 }
 ?>
