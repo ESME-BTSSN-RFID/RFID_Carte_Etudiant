@@ -1,6 +1,13 @@
 import serial
 import time
 import mysql.connector
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv(".env")
+user = os.environ.get("USER_BD")
+password = os.environ.get("PASS_BD")
 
 
 def connection():
