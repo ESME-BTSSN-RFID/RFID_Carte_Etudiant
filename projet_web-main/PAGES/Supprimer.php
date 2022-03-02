@@ -44,7 +44,7 @@
     </header>
 
     <form action="../SCRIPTS/delete.php" method="POST">
-        <select name="idCand">
+        <select name="idCarteEtudiant">
             <option value="">--Choisir un étudiant--</option>
             <?php foreach($result as $ligne){?>
             <option value="<?php echo $ligne['idCarteEtudiant'] ?>"><?php echo $ligne['nom']." ".$ligne['prenom']." -- ".$ligne['label'] ?></option>

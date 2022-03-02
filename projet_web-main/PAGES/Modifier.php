@@ -1,8 +1,13 @@
 <?php
 session_start();
 $idCand = $_SESSION['idCand'];
-
 require_once('../SCRIPTS/Modele.php');
+
+$cnx = Connexion("localhost", "projet_btssnir", "root", "");
+
+    $req="SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;";
+    $result=requeteSelect($cnx, $req);
+
 
 ?>
 
@@ -41,53 +46,43 @@ require_once('../SCRIPTS/Modele.php');
         </nav>
     </header>
 
-<?php
-$form=<<<HTML
-<form action="../SCRIPTS/update.php" method="POST"> 
-		<table class="mod">
-			<tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Date de naissance</th>
-                <th>Adresse</th>
-                <th>Adresse mail</th>
-                <th>Téléphone</th>
-                <th>Spécialité</th>
-                <th>Mot de passe</th>
-			</tr>
+    <form action="../SCRIPTS/update.php" method="GET"> 
+        <table class="mod">
+            <tr>
+                <th>Carte étudiant</th>
+                <th>Nouveau nom</th>
+                <th>Nouveau prénom</th>
+                <th>Classe</th>
+                <th>Valider</th>
+            </tr>
+            <tr>
+                <td>
+                    <select name="idCarteEtudiant">
+                        <option value="">--Choisir un étudiant--</option>
+                            <?php foreach($result as $ligne){?>
+                        <option value="<?php echo $ligne['idCarteEtudiant'] ?>"><?php echo $ligne['nom']." ".$ligne['prenom']." -- ".$ligne['label'] ?></option>
+                            <?php }?>
+                    </select>
+                </td>
+                    
+                <td><input type="text" name="nom" value="<?php if(isset($_GET['nom'])){echo$_GET['nom'];}?>"></td>
+                <td><input type="text" name="prenom" value="<?php if(isset($_GET['prenom'])){echo$_GET['prenom'];}?>"></td>
 
-			<tr>
-HTML;		
-
-$val=$_GET['val'];
-$_SESSION['val']=$val;
-if (isset($_GET['val'])){
-	$cnx=Connexion("localhost", "projet_btssnir", "root", "");
-    $req = "SELECT nom, Prenoms, DateNaissance, Adresse, courriel, Telephone, password FROM candidat WHERE idCand='$val'";
-    $result=requeteSelect($cnx, $req);
-
-	echo $form;
-	
-	foreach($result as $ligne){
-		echo "<td><input type='text' name='nom' value='$ligne[0]'></td><td><input type='text' name='prenom' value='$ligne[1]'></td><td><input type='date' name='date' value='$ligne[2]'></td><td><input type='text' name='adresse' value='$ligne[3]'></td><td><input type='text' name='email' value='$ligne[4]'></td><td><input type='number' name='telephone' value='0$ligne[5]'></td>"."<td>
-        <select name='specialite'>
-            <option value=''>--Choisir une spécialité--</option>
-            <option value='100'>DEV APP</option>
-            <option value='200'>ING RESEAUX</option>
-            <option value='300'>INTEG BDD</option>
-            <option value='400'>ADM SYS</option>
-            <option value='500'>Chef de projets</option>
-        </select>
-    </td>"."<td>"."<input type='text' name='password' value='$ligne[6]'>"."</td>";
-    }
-
-    echo "</tr>";
-    echo "<tr><td><input type='submit'></td></tr></table></form>";
-}
-if (isset($_GET['error'])) {
-    echo "<p class='error'>".$_GET['error']."</p>";
-}
-
-echo "</body></html>";
-
-?>
+                <td>   
+                    <select name="idClass">
+                        <option value="">--Choisir une classe--</option>
+                            <?php 
+                            $req="SELECT idClass, label FROM classe";
+                            $result=requeteSelect($cnx, $req);
+                            foreach($result as $ligne){?>
+                        <option value="<?php echo $ligne['idClass']?>"><?php echo $ligne['label']?></option>
+                            <?php }?>
+                    </select>
+                </td>
+            
+                <td><input type='submit'></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
