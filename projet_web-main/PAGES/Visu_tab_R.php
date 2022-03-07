@@ -1,8 +1,8 @@
 <?php
 session_start();
 include_once('../SCRIPTS/Modele.php');
-if (isset($_SESSION['idCarteEtudiant'])){
-    $idCarteEtudiant = $_SESSION['idCarteEtudiant'];
+if (isset($_SESSION['idCand'])){
+    $idCarteEtudiant = $_SESSION['idCand'];
 ?>
 
 <!DOCTYPE html>
@@ -40,57 +40,108 @@ if (isset($_SESSION['idCarteEtudiant'])){
     </header>
 
     <section>
-        <table class="tableau">
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Anglais</th>
-                <th>Culture générale</th>
-                <th>Français</th>
-                <th>Informatique</th>
-                <th>Mathématiques</th>
-                <th>Physique</th>
-                <th>Moyenne</th>
-            </tr>
 
-
+        <?php
+            $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+            $req = "SELECT * FROM classe";
+            $result=requeteSelect($cnx, $req);
+        ?>
+        <select name="classe" >
+            <option value="">--Choisir une classe--</option>
             <?php
-                $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-                if ($idCarteEtudiant==0) {
-                    $req="SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve WHERE idCarteEtudiant!=0";
-                }
-                else {
-                    $req="SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve WHERE idCarteEtudiant='$idCarteEtudiant'";
-                }
-                
-                $candidat=requeteSelect($cnx, $req);
-
-                foreach($eleve as $ligne){
-                    $req="SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve c INNER JOIN classe r ON c.idClasse=r.idClasse WHERE c.idCarteEtudiant !=0 AND c.idCarteEtudiant=$ligne[0]";
-                    $result=requeteSelect($cnx, $req);
-                    
-                    echo "<tr><td>".$ligne['nom']."</td><td>".$ligne['Prenoms']."</td>";
-                    $moyenne=0;
-                    $somme=0;
-
-                    foreach($result as $value){
-                        echo "<td>".$value['note']."</td>";
-                        
-                        $moyenne+=$value['note']*$value['coef'];
-                        $somme+=$value['coef'];
-                    }
-                    echo "<td>".round($moyenne/$somme,2)."</td>";
-                    if ($idCarteEtudiant==0) {
-                        echo "<td><a href='Resultat_Modifier.php?idCarteEtudiant=$ligne[0]'>Modifier</a></td>";
-                    }
-                    echo "</tr>";
-                    
+                foreach($result as $row){
+                    ?>
+                    <option value="<?php echo $row['idClass'];?>"><?php echo $row['label'];?></option>
+                    <?php
                 }
             ?>
-        </table>
-        <?php if (isset($_GET['succes'])){ ?>
-     		<p class="succes"><?php echo $_GET['succes']; ?></p>
-     	    <?php } ?>
+            
+        
+        </select>
+
+        <table class="tableau">
+            <tr>
+                <th>Heure</th>
+                <th>Lundi</th>
+                <th>Mardi</th>
+                <th>Mercredi</th>
+                <th>Jeudi</th>
+                <th>Vendredi</th>
+                <th>Samedi</th>
+                <th>Dimanche</th>
+            </tr>
+
+            <?php   
+            $first_of_week = date("Y-m-d", strtotime('monday this week'));
+            $last_of_week = date("Y-m-d", strtotime('sunday this week'));
+            
+            $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+            $req = "SELECT s.idSeance, p.nomProf, m.nom, c.label, s.dateDebut, s.dateFin FROM seance s INNER JOIN professeur p ON s.idProf=p.idProf INNER JOIN matiere m ON s.idMatiere=m.idMatiere INNER JOIN classe c ON s.idClasse=c.idClass WHERE dateDebut>='$first_of_week''T00:00' AND dateFin<='$last_of_week''T23:59' ORDER BY dateDebut";
+            $result=requeteSelect($cnx, $req);
+            $result = $result -> fetchAll();
+
+            
+            $actual_date = date('Y-m-d', time());
+            echo $actual_date."<br>";
+            /*$timestamp = strtotime($actual_date);
+            $day = date('D', $timestamp);
+            echo $day."</br>";*/
+         
+
+            
+            
+
+            for($i=0 ;$i<=6; $i++) {
+                $week_array[] = date('Y-m-d', strtotime("+ $i day", strtotime($first_of_week)));
+            }
+            
+            print_r($week_array);
+            /*
+            foreach($result as $line){
+                print_r( "</br>".$line["dateDebut"]);
+                echo "     ". substr($line["dateDebut"], 0, 10);
+                echo "     ". substr($line["dateDebut"], 11);
+            }*/
+
+            for($i=8; $i<=18; $i++){
+                echo "<tr>";
+                for($j=0; $j<=7; $j++){
+                    echo "<td>";
+                    if($j == 0){
+                        if(strlen($i) == 1){
+                            $hour = "0".$i;
+                            echo $hour."h00";
+                        }
+                        else{
+                            $hour = $i;
+                            echo $hour."h00";
+                        }
+                    }
+                    else{
+                        //With $hour and date in $week_array compare in database
+                        foreach($result as $x=>$line){
+                            $string_date = substr($line["dateDebut"], 0, 10);
+                            $string_hour = substr($line["dateDebut"], 11, 2);
+                                                        
+                            if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
+                                echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
+                                echo utf8_encode($line[2])."</br>";
+                                echo $line[1];
+                                //remove the line from the array
+                                unset($result[$x]);
+                            }
+                        }
+                        
+                    
+                        
+                    }
+                    echo "</td>";
+                }
+                echo "</tr>";
+            }
+
+            ?>
+        
     </section>
 </body>
 </html>
