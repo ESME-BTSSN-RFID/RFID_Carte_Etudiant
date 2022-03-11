@@ -2,7 +2,7 @@
 session_start();
 include_once('../SCRIPTS/Modele.php');
 if (isset($_SESSION['idCand'])){
-    $idCarteEtudiant = $_SESSION['idCand'];
+    $idCand = $_SESSION['idCand'];
 ?>
 
 <!DOCTYPE html>
@@ -10,22 +10,23 @@ if (isset($_SESSION['idCand'])){
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&ampdisplay=swap" rel="stylesheet"> 
-    <title>Notes</title>
+    <title>Emploi du temps</title>
     <link rel="stylesheet" href="../CSS/style_visu3.css">
     <link rel="icon" href="../favicon.png ">
 </head>
 <body>
     <header>
         <nav>
-            <?php if($idCarteEtudiant==0){?>
+            <?php if($idCand==0){?>
             <div class="dropdown">
-                <button class="dropbtn">Candidat
+                <button class="dropbtn">Menu étudiant
                 <i class="arrow down"></i>
                 </button>
                 <div class="dropdown-content">
-                    <a href="Visu_tab_IC.php">Liste des Candidats</a>
-                    <a href="Ajouter.php">Ajouter un candidat</a>
-                    <a href="Supprimer.php">Supprimer un candidat</a>
+                    <a href="Visu_tab_IC.php">Liste des étudiants</a>
+                    <a href="Ajouter.php">Ajouter un étudiant</a>
+                    <a href="Modifier.php">Modifier les informations d'un étudiant</a>
+                    <a href="Supprimer.php">Supprimer un étudiant</a>
                 </div>
             </div> 
             <?php
@@ -34,7 +35,17 @@ if (isset($_SESSION['idCand'])){
                 ?><a href="Visu_tab_IC.php">Informations</a><?php
             }?>
   
-            <a href="Visu_tab_R.php">Résultat</a>
+            <div class="dropdown">
+                <button class="dropbtn">Menu cours
+                <i class="arrow down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="Visu_tab_R.php">Emploi du temps</a>
+                    <a href="ajoutSeance.php">Ajouter une séance</a>
+                    <a href="Resultat_Modifier.php">Modifier les séances</a>
+                    <a href="suppr_seance.php">Supprimer une séance</a>
+                </div>
+            </div>
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>
@@ -92,7 +103,7 @@ if (isset($_SESSION['idCand'])){
             <?php   
                         
             $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-            $req = "SELECT s.idSeance, p.nomProf, m.nom, c.label, s.dateDebut, s.dateFin FROM seance s INNER JOIN professeur p ON s.idProf=p.idProf INNER JOIN matiere m ON s.idMatiere=m.idMatiere INNER JOIN classe c ON s.idClasse=c.idClass WHERE dateDebut>='$first_of_week''T00:00' AND dateFin<='$last_of_week''T23:59' ORDER BY dateDebut";
+            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' ORDER BY heureDebut";
             $result=requeteSelect($cnx, $req);
             $result = $result -> fetchAll();
 
@@ -102,10 +113,8 @@ if (isset($_SESSION['idCand'])){
             /*$timestamp = strtotime($actual_date);
             $day = date('D', $timestamp);
             echo $day."</br>";*/
-         
 
-            
-            
+
 
             for($i=0 ;$i<=6; $i++) {
                 $week_array[] = date('Y-m-d', strtotime("+ $i day", strtotime($first_of_week)));
@@ -136,13 +145,16 @@ if (isset($_SESSION['idCand'])){
                     else{
                         //With $hour and date in $week_array compare in database
                         foreach($result as $x=>$line){
-                            $string_date = substr($line["dateDebut"], 0, 10);
-                            $string_hour = substr($line["dateDebut"], 11, 2);
+                            $string_date = substr($line["heureDebut"], 0, 10);
+                            $string_hour = substr($line["heureDebut"], 11, 2);
                                                         
                             if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
+                                echo "<form action='../SCRIPTS/suppr.php' method='POST'>";
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
                                 echo utf8_encode($line[2])."</br>";
                                 echo $line[1];
+                                echo "</br><button name='idSeance' value='$line[0]'>Supprimer</button>";
+
                                 //remove the line from the array
                                 unset($result[$x]);
                             }
@@ -151,10 +163,13 @@ if (isset($_SESSION['idCand'])){
                     
                         
                     }
+
                     echo "</td>";
                 }
                 echo "</tr>";
             }
+
+                            
 
             ?>
         
@@ -164,6 +179,7 @@ if (isset($_SESSION['idCand'])){
 <?php
 }else{
     header("Location: ../PAGES/index.php");
+    echo "test 3";
     exit();
 }
 ?>

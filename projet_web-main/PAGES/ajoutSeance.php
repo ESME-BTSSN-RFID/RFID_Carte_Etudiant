@@ -15,7 +15,7 @@ $result=requeteSelect($cnx, $req);
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&ampdisplay=swap" rel="stylesheet"> 
-    <title>Ajouter un étudiant</title>
+    <title>Ajouter une séance</title>
     <link rel="stylesheet" href="../CSS/style_visu3.css">
     <link rel="icon" href="../favicon.png ">
 </head>
@@ -55,30 +55,58 @@ $result=requeteSelect($cnx, $req);
         </nav>
     </header>
 
-    <form action="../SCRIPTS/insert.php" method="GET"> 
+    <form action="../SCRIPTS/ajout.php" method="GET"> 
         <table class="mod">
             <tr>
-                <th>Carte Etudiant</th>
-                <th>Nom</th>
-                <th>Prénom</th>
+                <th>Classe</th>
+                <th>Matière</th>
+                <th>Professeur</th>
+                <th>Salle</th>
+                <th>Heure du début</th>
+                <th>Heure de fin</th>
             </tr>
 
             <tr>
-                <td><input type="text" name="idCarteEtudiant" value="<?php if(isset($_GET['idCarteEtudiant'])){echo$_GET['idCarteEtudiant'];}?>"></td>
-                <td><input type="text" name="nom" value="<?php if(isset($_GET['nom'])){echo$_GET['nom'];}?>"></td>
-                <td><input type="text" name="prenom" value="<?php if(isset($_GET['prenom'])){echo$_GET['prenom'];}?>"></td>
-
                 <td>
                     <select name="idClass">
-                    <option value="">--Choisir une classe--</option>
+                    <option value="">--Sélectionner la classe--</option>
                         <?php foreach($result as $ligne){?>
                     <option value="<?php echo $ligne['idClass'] ?>"><?php echo $ligne['label']?></option>
                     <?php }?>
                     </select>
                 </td>
-            
-
-    
+                <td>
+                    <select name="idCours">
+                    <option value="">--Sélectionner la matière--</option>
+                        <?php   $req="SELECT idCours, matiere FROM cours";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idCours'] ?>"><?php echo $ligne['matiere']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idProf">
+                    <option value="">--Sélectionner le prof--</option>
+                        <?php   $req="SELECT idProf, nom, prenom FROM prof";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idProf'] ?>"><?php echo $ligne['nom']?> <?php echo $ligne['prenom']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idSalle">
+                    <option value="">--Sélectionner la salle--</option>
+                        <?php   $req="SELECT idSalle, room FROM salle";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idSalle'] ?>"><?php echo $ligne['room']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td><input type='datetime-local' name="heureDebut"></td>
+                <td><input type='datetime-local' name="heureFin"></td>
         
                 <td><input type='submit'></td>
             </tr>        

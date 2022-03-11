@@ -1,34 +1,38 @@
 <?php
 session_start();
+$idCand = $_SESSION['idCand'];
 require_once('../SCRIPTS/Modele.php');
 
-$idCand_nav = $_SESSION['idCand'];
-$idCand=$_GET['idCand'];
-$_SESSION['idCand_resultat']=$idCand;
-?>
+$cnx = Connexion("localhost", "projet_btssnir", "root", "");
 
+    $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
+    $result=requeteSelect($cnx, $req);
+
+
+?>
 
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&ampdisplay=swap" rel="stylesheet"> 
-    <title>Modifier résultats candidat</title>
+    <title>Modifier information étudiant</title>
     <link rel="stylesheet" href="../CSS/style_visu3.css">
     <link rel="icon" href="../favicon.png ">
 </head>
 <body>
     <header>
         <nav>
-            <?php if($idCand_nav==0){?>
+            <?php if($idCand==0){?>
             <div class="dropdown">
-                <button class="dropbtn">Candidat
+                <button class="dropbtn">Menu étudiant
                 <i class="arrow down"></i>
                 </button>
                 <div class="dropdown-content">
-                    <a href="Visu_tab_IC.php">Liste des Candidats</a>
-                    <a href="Ajouter.php">Ajouter un candidat</a>
-                    <a href="Supprimer.php">Supprimer un candidat</a>
+                    <a href="Visu_tab_IC.php">Liste des étudiants</a>
+                    <a href="Ajouter.php">Ajouter un étudiant</a>
+                    <a href="Modifier.php">Modifier les informations d'un étudiant</a>
+                    <a href="Supprimer.php">Supprimer un étudiant</a>
                 </div>
             </div> 
             <?php
@@ -37,61 +41,96 @@ $_SESSION['idCand_resultat']=$idCand;
                 ?><a href="Visu_tab_IC.php">Informations</a><?php
             }?>
   
-            <a href="Visu_tab_R.php">Résultat</a>
+            <div class="dropdown">
+                <button class="dropbtn">Menu cours
+                <i class="arrow down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="Visu_tab_R.php">Emploi du temps</a>
+                    <a href="ajoutSeance.php">Ajouter une séance</a>
+                    <a href="Resultat_Modifier.php">Modifier les séances</a>
+                    <a href="suppr_seance.php">Supprimer une séance</a>
+                </div>
+            </div>
+            
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>
 
-    <section>
-        <form action="../SCRIPTS/resultat_update.php" method="POST"> 
-            <table class="mod">
-                <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Anglais</th>
-                    <th>Culture générale</th>
-                    <th>Français</th>
-                    <th>Informatique</th>
-                    <th>Mathématiques</th>
-                    <th>Physique</th>
-                </tr>
-            
-                <?php
-                $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-                if ($idCand==0) {
-                    $req="SELECT idCand, nom, Prenoms FROM candidat WHERE idCand!=0";
-                }
-                else {
-                    $req="SELECT idCand, nom, Prenoms FROM candidat WHERE idCand='$idCand'";
-                }
-                
-                $candidat=requeteSelect($cnx, $req);
-
-                foreach($candidat as $ligne){
-                    $req="SELECT c.idCand, note, designation, coef FROM candidat c INNER JOIN resultat r ON c.idCand=r.idCand INNER JOIN epreuve e ON e.idEpr=r.idEpr WHERE c.idCand !=0 AND c.idCand=$ligne[0] ORDER BY designation";
-                    $result=requeteSelect($cnx, $req);
-                    
-                    echo "<tr><td>".$ligne['nom']."</td><td>".$ligne['Prenoms']."</td>";
-
-                    foreach($result as $value){
-                        echo "<td>"."<input type='text' value='$value[1]' name='$value[2]'>"."</td>";   
-                    }
-                }
-                ?>
-                
-                    <td>
-                        <input type="submit">
-                    </td>
-                </tr>
-
-                
-            </table>
-            <?php
-                    if (isset($_GET['error'])) {
-                        echo "<p class='error'>".$_GET['error']."</p>";
-                    }
-                ?>
-        </form>
-    </section>
+    <form action="../SCRIPTS/resultat_update.php" method="GET"> 
+        <table class="mod">
+            <tr>
+                <th>Cours</th>
+                <th>Classe</th>
+                <th>Matière</th>
+                <th>Professeur</th>
+                <th>Salle</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+            </tr>
+            <tr>
+                <td>
+                    <select name="idSeance">
+                        <option value="">--Sélectionner le cours--</option>
+                            <?php 
+                            foreach($result as $ligne){
+                                $date = substr($ligne['heureDebut'], 0, 10);
+                                $timestamp = strtotime($date);
+                                $day = date('l', $timestamp);
+                                var_dump($day);
+                                $debut = substr($ligne['heureDebut'], 11);
+                                $fin = substr($ligne['heureFin'], 11);
+                                $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');?>
+                        <option value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ".$ligne['matiere']." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></option>
+                            <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idClass">
+                    <option value="">--Modifier la classe--</option>
+                        <?php   $req="SELECT idClass, label FROM classe";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idClass'] ?>"><?php echo $ligne['label']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idCours">
+                    <option value="">--Modifier la matière--</option>
+                        <?php   $req="SELECT idCours, matiere FROM cours";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idCours'] ?>"><?php echo $ligne['matiere']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idProf">
+                    <option value="">--Modifier le prof--</option>
+                        <?php   $req="SELECT idProf, nom, prenom FROM prof";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idProf'] ?>"><?php echo $ligne['nom']?> <?php echo $ligne['prenom']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idSalle">
+                    <option value="">--Modifier la salle--</option>
+                        <?php   $req="SELECT idSalle, room FROM salle";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idSalle'] ?>"><?php echo $ligne['room']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td><input type='datetime-local' name="heureDebut"></td>
+                <td><input type='datetime-local' name="heureFin"></td>
+        
+                <td><input type='submit'></td>
+            </tr>
+        </table>
+    </form>
 </body>
 </html>
