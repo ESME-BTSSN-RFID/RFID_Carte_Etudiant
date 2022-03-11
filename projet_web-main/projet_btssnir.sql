@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 02 mars 2022 à 09:49
+-- Généré le : ven. 11 mars 2022 à 15:31
 -- Version du serveur :  5.7.31
 -- Version de PHP : 7.3.21
 
@@ -106,7 +106,6 @@ INSERT INTO `eleve` (`idCarteEtudiant`, `nom`, `prenom`, `idClass`) VALUES
 ('1234', 'Bon bah', 'go au naan', 1),
 ('17', 'Cridlig', 'Hugo', 1),
 ('202', 'Vercelonne', 'Hugo', 1),
-('556', 'Peintureaux', 'QuÃ©vine', 2),
 ('852', 'De almeida vaz', 'Alexandre', 1),
 ('96', 'LESGOO', 'AU NAAN', 1),
 ('ABCD1', 'Shaw', 'Martin', 1);
@@ -135,6 +134,32 @@ INSERT INTO `prof` (`idProf`, `nom`, `prenom`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `salle`
+--
+
+DROP TABLE IF EXISTS `salle`;
+CREATE TABLE IF NOT EXISTS `salle` (
+  `idSalle` int(11) NOT NULL,
+  `room` varchar(10) NOT NULL,
+  PRIMARY KEY (`idSalle`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `salle`
+--
+
+INSERT INTO `salle` (`idSalle`, `room`) VALUES
+(1, 'B01A'),
+(2, 'B01B'),
+(3, 'B02A'),
+(4, 'B02B'),
+(5, 'B06A'),
+(6, 'B06B'),
+(7, 'B07');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `seance`
 --
 
@@ -144,20 +169,22 @@ CREATE TABLE IF NOT EXISTS `seance` (
   `idClass` int(11) NOT NULL,
   `idCours` int(11) NOT NULL,
   `idProf` int(11) NOT NULL,
+  `idSalle` int(11) NOT NULL,
   `heureDebut` varchar(20) NOT NULL,
   `heureFin` varchar(20) NOT NULL,
   PRIMARY KEY (`idSeance`),
   KEY `idClass` (`idClass`),
   KEY `idCours` (`idCours`),
   KEY `idProf` (`idProf`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `seance`
 --
 
-INSERT INTO `seance` (`idSeance`, `idClass`, `idCours`, `idProf`, `heureDebut`, `heureFin`) VALUES
-(5, 2, 4, 1, '2022-03-02T09:50', '2022-03-02T12:50');
+INSERT INTO `seance` (`idSeance`, `idClass`, `idCours`, `idProf`, `idSalle`, `heureDebut`, `heureFin`) VALUES
+(25, 1, 2, 1, 2, '2022-03-11T16:05', '2022-03-11T18:05'),
+(28, 2, 1, 1, 1, '2022-03-08T16:10', '2022-03-08T18:10');
 
 -- --------------------------------------------------------
 
@@ -205,6 +232,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`login`, `password`) VALUES
+('hugo', 'hugo'),
 ('user', 'root');
 
 --
@@ -223,7 +251,8 @@ ALTER TABLE `eleve`
 ALTER TABLE `seance`
   ADD CONSTRAINT `seance_ibfk_1` FOREIGN KEY (`idClass`) REFERENCES `classe` (`idClass`),
   ADD CONSTRAINT `seance_ibfk_2` FOREIGN KEY (`idCours`) REFERENCES `cours` (`idCours`),
-  ADD CONSTRAINT `seance_ibfk_3` FOREIGN KEY (`idProf`) REFERENCES `prof` (`idProf`);
+  ADD CONSTRAINT `seance_ibfk_3` FOREIGN KEY (`idProf`) REFERENCES `prof` (`idProf`),
+  ADD CONSTRAINT `seance_ibfk_4` FOREIGN KEY (`idProf`) REFERENCES `salle` (`idSalle`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
