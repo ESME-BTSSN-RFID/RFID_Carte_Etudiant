@@ -61,6 +61,7 @@ $result=requeteSelect($cnx, $req);
                 <th>Classe</th>
                 <th>Matière</th>
                 <th>Professeur</th>
+                <th>Salle</th>
                 <th>Heure du début</th>
                 <th>Heure de fin</th>
             </tr>
@@ -91,6 +92,16 @@ $result=requeteSelect($cnx, $req);
                                 $result=requeteSelect($cnx, $req);
                         foreach($result as $ligne){?>
                     <option value="<?php echo $ligne['idProf'] ?>"><?php echo $ligne['nom']?> <?php echo $ligne['prenom']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idSalle">
+                    <option value="">--Sélectionner la salle--</option>
+                        <?php   $req="SELECT idSalle, room FROM salle";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idSalle'] ?>"><?php echo $ligne['room']?></option>
                     <?php }?>
                     </select>
                 </td>

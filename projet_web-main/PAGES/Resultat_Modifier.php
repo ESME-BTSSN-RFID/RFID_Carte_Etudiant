@@ -64,6 +64,7 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
                 <th>Classe</th>
                 <th>Matière</th>
                 <th>Professeur</th>
+                <th>Salle</th>
                 <th>Heure de début</th>
                 <th>Heure de fin</th>
             </tr>
@@ -111,6 +112,16 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
                                 $result=requeteSelect($cnx, $req);
                         foreach($result as $ligne){?>
                     <option value="<?php echo $ligne['idProf'] ?>"><?php echo $ligne['nom']?> <?php echo $ligne['prenom']?></option>
+                    <?php }?>
+                    </select>
+                </td>
+                <td>
+                    <select name="idSalle">
+                    <option value="">--Modifier la salle--</option>
+                        <?php   $req="SELECT idSalle, room FROM salle";
+                                $result=requeteSelect($cnx, $req);
+                        foreach($result as $ligne){?>
+                    <option value="<?php echo $ligne['idSalle'] ?>"><?php echo $ligne['room']?></option>
                     <?php }?>
                     </select>
                 </td>

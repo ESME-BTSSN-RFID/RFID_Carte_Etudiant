@@ -3,15 +3,6 @@ session_start();
 include_once('../SCRIPTS/Modele.php');
 if (isset($_SESSION['idCand'])){
     $idCand = $_SESSION['idCand'];
-    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-    if($idCand==0){
-        $req="SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;";
-        $result=requeteSelect($cnx, $req);
-    }
-    else{
-        $req = "SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;"; 
-        $result=requeteSelect($cnx, $req);
-    }
 ?>
 
 <!DOCTYPE html>
@@ -60,61 +51,115 @@ if (isset($_SESSION['idCand'])){
     </header>
 
     <section>
-            <?php
-                $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-                $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
-                $result=requeteSelect($cnx, $req);?>
 
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                        <?php
-                            foreach($result as $ligne){
-                            $date = substr($ligne['heureDebut'], 0, 10);
-                            $timestamp = strtotime($date);
-                            $day = date('l', $timestamp);
-                            var_dump($day);
-                            $debut = substr($ligne['heureDebut'], 11);
-                            $fin = substr($ligne['heureFin'], 11);
-                            $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');
+        <?php
+            $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+            $req = "SELECT * FROM classe";
+            $result=requeteSelect($cnx, $req);
+        ?>
+        <select name="classe" >
+            <option value="">--Choisir une classe--</option>
+            <?php
+                foreach($result as $row){
+                    ?>
+                    <option value="<?php echo $row['idClass'];?>"><?php echo $row['label'];?></option>
+                    <?php
+                }
+            ?>
+            
+        
+        </select>
+
+        <table class="tableau">
+            <tr>
+                <th>Heure</th>
+                <th>Lundi</th>
+                <th>Mardi</th>
+                <th>Mercredi</th>
+                <th>Jeudi</th>
+                <th>Vendredi</th>
+                <th>Samedi</th>
+                <th>Dimanche</th>
+            </tr>
+
+            <?php   
+            $first_of_week = date("Y-m-d", strtotime('monday this week'));
+            $last_of_week = date("Y-m-d", strtotime('sunday this week'));
+            
+            $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' ORDER BY heureDebut";
+            $result=requeteSelect($cnx, $req);
+            $result = $result -> fetchAll();
+
+            
+            $actual_date = date('Y-m-d', time());
+            echo $actual_date."<br>";
+            /*$timestamp = strtotime($actual_date);
+            $day = date('D', $timestamp);
+            echo $day."</br>";*/
+
+
+
+            for($i=0 ;$i<=6; $i++) {
+                $week_array[] = date('Y-m-d', strtotime("+ $i day", strtotime($first_of_week)));
+            }
+            
+            print_r($week_array);
+            /*
+            foreach($result as $line){
+                print_r( "</br>".$line["dateDebut"]);
+                echo "     ". substr($line["dateDebut"], 0, 10);
+                echo "     ". substr($line["dateDebut"], 11);
+            }*/
+
+            for($i=8; $i<=18; $i++){
+                echo "<tr>";
+                for($j=0; $j<=7; $j++){
+                    echo "<td>";
+                    if($j == 0){
+                        if(strlen($i) == 1){
+                            $hour = "0".$i;
+                            echo $hour."h00";
                         }
-                    
-                            $jour = array(null, "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
-                            $rdv["Dimanche"]["16"] = "Maths";
-                            $rdv["Lundi"]["8"] = "Anglais";
-                            echo "<tr><th>Heure</th>";
-                            for($x = 1; $x < 8; $x++)
-                                echo "<th>".$jour[$x]."</th>";
-                            echo "</tr>";
-                            for($j = 8; $j < 19; $j += 2) {
-                                echo "<tr>";
-                                for($i = 0; $i < 7; $i++) {
-                                    if($i == 0) {
-                                        $heure = str_replace(".2", ":00", $j);
-                                        echo "<td class=\"time\">".$heure."</td>";
-                                    }
-                                    echo "<td>";
-                                    if(isset($rdv[$jour[$i+1]][$heure])) {
-                                        echo $rdv[$jour[$i+1]][$heure];
-                                    }
-                                    echo "</td>";
-                                }
-                                echo "</tr>";
+                        else{
+                            $hour = $i;
+                            echo $hour."h00";
+                        }
+                    }
+                    else{
+                        //With $hour and date in $week_array compare in database
+                        foreach($result as $x=>$line){
+                            $string_date = substr($line["heureDebut"], 0, 10);
+                            $string_hour = substr($line["heureDebut"], 11, 2);
+                                                        
+                            if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
+                                echo "<form action='../SCRIPTS/suppr.php' method='POST'>";
+                                echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
+                                echo utf8_encode($line[2])."</br>";
+                                echo $line[1];
+                                echo "</br><button name='idSeance' value='$line[0]'>Supprimer</button>";
+
+                                //remove the line from the array
+                                unset($result[$x]);
                             }
-                        ?>
-                </tr>
-                    </table>
-                                
-                    <?php $candidat=requeteSelect($cnx, $req);
+                        }
+                        
+                    
+                        
+                    }
+
+                    echo "</td>";
+                }
+                echo "</tr>";
+            }
 
                             
-                    if (isset($_GET['succes'])){ ?>
-                            <?php echo "test 1"; ?>
-                            <p class="succes"><?php echo $_GET['succes']; ?></p>
-                            <?php echo "test 2"; ?>
-                            <?php } ?>
-                    </section>
-                </body>
-                </html>
+
+            ?>
+        
+    </section>
+</body>
+</html>
 <?php
 }else{
     header("Location: ../PAGES/index.php");

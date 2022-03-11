@@ -75,7 +75,7 @@
                 </td>
 
                 <td>
-                    <input type="submit" value="supprimer">
+                    <input type="submit" value="Supprimer">
                 </td>
             </tr>
         </table>

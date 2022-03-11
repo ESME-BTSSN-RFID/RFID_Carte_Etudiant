@@ -12,7 +12,7 @@ if(!empty($seance)){
     header("Location: ../PAGES/Visu_tab_R.php?succes=Séance supprimée avec succès");
 }
 else {
-    header("Location: ../PAGES/Supprimer.php?error=Veuillez sélectionner une séance");
+    header("Location: ../PAGES/suppr_seance.php?error=Veuillez sélectionner une séance");
 }
 
 ?>
