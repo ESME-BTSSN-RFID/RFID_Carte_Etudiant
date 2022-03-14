@@ -165,8 +165,7 @@ if (isset($_SESSION['idCand'])){
                             if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
                                 echo utf8_encode($line[2])."</br>";
-                                echo utf8_encode($line[1]);
-                                echo "</br><button name='idSeance' value='$line[0]'>Supprimer</button>";?>
+                                echo utf8_encode($line[1]);?>
 
                                 <form action='../PAGES/Resultat_Modifier.php' method='GET'>
                                     </br><button name='idSeance' value='<?php echo $line[0]?>'>Modifier</button>
