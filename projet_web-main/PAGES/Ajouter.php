@@ -1,5 +1,5 @@
 <?php
-require_once("C:\wamp64\www\projet_web-main\projet_web-main\SCRIPTS\Modele.php");
+require_once("..\SCRIPTS\Modele.php");
 session_start();
 $idCand = $_SESSION['idCand'];
 
