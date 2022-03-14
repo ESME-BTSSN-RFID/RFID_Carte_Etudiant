@@ -7,10 +7,6 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
 $req = "SELECT idClass, label FROM classe";
 $result=requeteSelect($cnx, $req);
 
-
-$date = date("H:m", strtotime("+56 minutes", strtotime("16:20")));
-echo $date;
-
 ?>
 
 
