@@ -1,11 +1,15 @@
 <?php
-require_once("C:\wamp64\www\projet_web-main\projet_web-main\SCRIPTS\Modele.php");
+require_once("..\SCRIPTS\Modele.php");
 session_start();
 $idCand = $_SESSION['idCand'];
 
 $cnx = Connexion("localhost", "projet_btssnir", "root", "");
 $req = "SELECT idClass, label FROM classe";
 $result=requeteSelect($cnx, $req);
+
+
+$date = date("H:m", strtotime("+56 minutes", strtotime("16:20")));
+echo $date;
 
 ?>
 
@@ -63,7 +67,7 @@ $result=requeteSelect($cnx, $req);
                 <th>Professeur</th>
                 <th>Salle</th>
                 <th>Heure du début</th>
-                <th>Heure de fin</th>
+                <th>Durée</th>
             </tr>
 
             <tr>
@@ -71,7 +75,7 @@ $result=requeteSelect($cnx, $req);
                     <select name="idClass">
                     <option value="">--Sélectionner la classe--</option>
                         <?php foreach($result as $ligne){?>
-                    <option value="<?php echo $ligne['idClass'] ?>"><?php echo $ligne['label']?></option>
+                    <option value="<?php echo $ligne['idClass'] ?>"><?php echo utf8_encode($ligne['label'])?></option>
                     <?php }?>
                     </select>
                 </td>
@@ -81,7 +85,7 @@ $result=requeteSelect($cnx, $req);
                         <?php   $req="SELECT idCours, matiere FROM cours";
                                 $result=requeteSelect($cnx, $req);
                         foreach($result as $ligne){?>
-                    <option value="<?php echo $ligne['idCours'] ?>"><?php echo $ligne['matiere']?></option>
+                    <option value="<?php echo $ligne['idCours'] ?>"><?php echo utf8_encode($ligne['matiere'])?></option>
                     <?php }?>
                     </select>
                 </td>
@@ -91,7 +95,7 @@ $result=requeteSelect($cnx, $req);
                         <?php   $req="SELECT idProf, nom, prenom FROM prof";
                                 $result=requeteSelect($cnx, $req);
                         foreach($result as $ligne){?>
-                    <option value="<?php echo $ligne['idProf'] ?>"><?php echo $ligne['nom']?> <?php echo $ligne['prenom']?></option>
+                    <option value="<?php echo $ligne['idProf'] ?>"><?php echo utf8_encode($ligne['nom'])?> <?php echo utf8_encode($ligne['prenom'])?></option>
                     <?php }?>
                     </select>
                 </td>
@@ -101,12 +105,12 @@ $result=requeteSelect($cnx, $req);
                         <?php   $req="SELECT idSalle, room FROM salle";
                                 $result=requeteSelect($cnx, $req);
                         foreach($result as $ligne){?>
-                    <option value="<?php echo $ligne['idSalle'] ?>"><?php echo $ligne['room']?></option>
+                    <option value="<?php echo $ligne['idSalle'] ?>"><?php echo utf8_encode($ligne['room'])?></option>
                     <?php }?>
                     </select>
                 </td>
                 <td><input type='datetime-local' name="heureDebut"></td>
-                <td><input type='datetime-local' name="heureFin"></td>
+                <td><input type='number' name="duree" min="1" max="10"></td>
         
                 <td><input type='submit'></td>
             </tr>        

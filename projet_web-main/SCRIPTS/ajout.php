@@ -6,14 +6,14 @@ $cours=$_GET['idCours'];
 $prof=$_GET['idProf'];
 $salle=$_GET['idSalle'];
 $debut=$_GET['heureDebut'];
-$fin=$_GET['heureFin'];
+$duree=$_GET['duree'];
 //$telephone=$_POST['telephone'];
 //$specialite=$_POST['specialite'];
 //$password=$_POST['password'];
 
 
 
-if (empty($classe) || empty($cours) || empty($prof) || empty($salle) || empty($debut) || empty($fin)) {
+if (empty($classe) || empty($cours) || empty($prof) || empty($salle) || empty($debut) || empty($duree)) {
     header("Location: ../PAGES/ajoutSeance.php?error=Veuillez compléter tous les champs&idClass=$idClass&idCours=$idCours&idProf=$idProf&idSalle=$salle&heureDebut=$debut&heureFin=$fin");
     exit();
 }

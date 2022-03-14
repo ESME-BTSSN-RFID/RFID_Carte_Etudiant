@@ -55,24 +55,33 @@ if (isset($_SESSION['idCand'])){
         <?php
             $cnx=Connexion("localhost", "projet_btssnir", "root", "");
             $req = "SELECT * FROM classe";
-            $result=requeteSelect($cnx, $req);
-
-            $first_of_week = date("Y-m-d", strtotime('monday this week'));
-            $last_of_week = date("Y-m-d", strtotime('sunday this week'));
-            $first_month = date("m", strtotime('monday this week'));
-            $last_month = date("m", strtotime('sunday this week'));
+            $result=requeteSelect($cnx, $req);     
             
-            $month = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-            $first_month = $month[intval($first_month)-1];
-            $last_month = $month[intval($last_month)-1];
+            if (isset($_GET['error'])){
+                echo "<p class='error'>".$_GET['error']."</p>";
+            }
 
-            $first_date = date("j ", strtotime($first_of_week));
-            $last_date = date("j ", strtotime($last_of_week));
 
-        
+            
+            if(isset($_GET['classe']) || isset($_GET['week'])){
+                $classe = $_GET['classe'];
+                $week = substr($_GET['week'], -2);
+                $year = substr($_GET['week'], 0, 4);
+
+                $week_input = $year."-W".$week;
+            }
+            else{
+                $classe = 1;
+                $week = date("W");
+                $year = date("Y");
+
+                $week_input = $year."-W".$week;
+            }
+
+
         ?>
 
-        <form action="">
+        <form action="../SCRIPTS/edt.php" action="GET">
             <select name="classe" >
                 <option value="">--Choisir une classe--</option>
                 <?php
@@ -83,9 +92,11 @@ if (isset($_SESSION['idCand'])){
                     }
                 ?>
         
-        </select>
+            </select>
+            
+            <input type="week" name="week" value="<?php echo $week_input ?>">
+            <input type="submit" value="Choisir">
         
-        <p><button class="button"> <i class="arrow left"></i></button> Semaine du <?php echo $first_date.$first_month?> au <?php echo $last_date.$last_month?> <button class="button"> <i class="arrow right"></i></button></p>
         </form>
 
         <table class="tableau">
@@ -100,16 +111,21 @@ if (isset($_SESSION['idCand'])){
                 <th>Dimanche</th>
             </tr>
 
-            <?php   
-                        
-            $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' ORDER BY heureDebut";
+            <?php
+
+            $dto = new DateTime();
+            $first_of_week = $dto->setISODate($year, $week)->format('Y-m-d');
+            $last_of_week = $dto->modify('+6 days')->format('Y-m-d');
+
+            $month_array = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+            echo "<p>Semaine du ".substr($first_of_week, 8, 2)." ".$month_array[substr($first_of_week, 5, 2)-1]." au ".substr($last_of_week, 8, 2)." ".$month_array[substr($last_of_week, 5, 2)-1]."</p>";
+
+            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
             $result=requeteSelect($cnx, $req);
             $result = $result -> fetchAll();
 
             
             $actual_date = date('Y-m-d', time());
-            echo $actual_date."<br>";
             /*$timestamp = strtotime($actual_date);
             $day = date('D', $timestamp);
             echo $day."</br>";*/
@@ -120,7 +136,6 @@ if (isset($_SESSION['idCand'])){
                 $week_array[] = date('Y-m-d', strtotime("+ $i day", strtotime($first_of_week)));
             }
             
-            print_r($week_array);
             /*
             foreach($result as $line){
                 print_r( "</br>".$line["dateDebut"]);
@@ -152,7 +167,7 @@ if (isset($_SESSION['idCand'])){
                                 echo "<form action='../SCRIPTS/suppr.php' method='POST'>";
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
                                 echo utf8_encode($line[2])."</br>";
-                                echo $line[1];
+                                echo utf8_encode($line[1]);
                                 echo "</br><button name='idSeance' value='$line[0]'>Supprimer</button>";
 
                                 //remove the line from the array
