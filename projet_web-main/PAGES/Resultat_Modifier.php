@@ -3,12 +3,12 @@ session_start();
 $idCand = $_SESSION['idCand'];
 require_once('../SCRIPTS/Modele.php');
 
+$seance=$_GET['idSeance'];
+
 $cnx = Connexion("localhost", "projet_btssnir", "root", "");
 
-    $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
-    $result=requeteSelect($cnx, $req);
-
-
+/*$req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
+$result=requeteSelect($cnx, $req);*/
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +48,6 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
                 <div class="dropdown-content">
                     <a href="Visu_tab_R.php">Emploi du temps</a>
                     <a href="ajoutSeance.php">Ajouter une séance</a>
-                    <a href="Resultat_Modifier.php">Modifier les séances</a>
                     <a href="suppr_seance.php">Supprimer une séance</a>
                 </div>
             </div>
@@ -69,21 +68,17 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
                 <th>Heure de fin</th>
             </tr>
             <tr>
-                <td>
-                    <select name="idSeance">
-                        <option value="">--Sélectionner le cours--</option>
-                            <?php 
+                <td><?php $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf WHERE idSeance = $seance;";
+                            $result=requeteSelect($cnx, $req);
                             foreach($result as $ligne){
                                 $date = substr($ligne['heureDebut'], 0, 10);
                                 $timestamp = strtotime($date);
                                 $day = date('l', $timestamp);
-                                var_dump($day);
                                 $debut = substr($ligne['heureDebut'], 11);
                                 $fin = substr($ligne['heureFin'], 11);
-                                $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');?>
-                        <option value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ".$ligne['matiere']." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></option>
-                            <?php }?>
-                    </select>
+                                $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');}?>
+
+                    <label><?php echo $ligne['label']." ".utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></label>
                 </td>
                 <td>
                     <select name="idClass">
@@ -101,7 +96,7 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
                         <?php   $req="SELECT idCours, matiere FROM cours";
                                 $result=requeteSelect($cnx, $req);
                         foreach($result as $ligne){?>
-                    <option value="<?php echo $ligne['idCours'] ?>"><?php echo $ligne['matiere']?></option>
+                    <option value="<?php echo $ligne['idCours'] ?>"><?php echo utf8_encode($ligne['matiere'])?></option>
                     <?php }?>
                     </select>
                 </td>

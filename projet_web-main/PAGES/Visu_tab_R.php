@@ -42,7 +42,6 @@ if (isset($_SESSION['idCand'])){
                 <div class="dropdown-content">
                     <a href="Visu_tab_R.php">Emploi du temps</a>
                     <a href="ajoutSeance.php">Ajouter une séance</a>
-                    <a href="Resultat_Modifier.php">Modifier les séances</a>
                     <a href="suppr_seance.php">Supprimer une séance</a>
                 </div>
             </div>
@@ -133,18 +132,24 @@ if (isset($_SESSION['idCand'])){
                             $string_hour = substr($line["heureDebut"], 11, 2);
                                                         
                             if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
-                                echo "<form action='../SCRIPTS/suppr.php' method='POST'>";
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
                                 echo utf8_encode($line[2])."</br>";
-                                echo $line[1];
-                                echo "</br><button name='idSeance' value='$line[0]'>Supprimer</button>";
+                                echo $line[1];?>
 
+                                <form action='../PAGES/Resultat_Modifier.php' method='GET'>
+                                    </br><button name='idSeance' value='<?php echo $line[0]?>'>Modifier</button>
+                                </form>
+
+                                <form action='../SCRIPTS/suppr.php' method='POST'>
+                                    </br><button name='idSeance' value='<?php echo $line[0]?>'>Supprimer</button>
+                                </form>
+                                
+
+                                <?php
                                 //remove the line from the array
                                 unset($result[$x]);
                             }
                         }
-                        
-                    
                         
                     }
 
@@ -152,8 +157,6 @@ if (isset($_SESSION['idCand'])){
                 }
                 echo "</tr>";
             }
-
-                            
 
             ?>
         
