@@ -7,6 +7,10 @@ $cnx = Connexion("localhost", "projet_btssnir", "root", "");
 $req = "SELECT idClass, label FROM classe";
 $result=requeteSelect($cnx, $req);
 
+
+$date = date("H:m", strtotime("+56 minutes", strtotime("16:20")));
+echo $date;
+
 ?>
 
 
@@ -50,6 +54,7 @@ $result=requeteSelect($cnx, $req);
                     <a href="suppr_seance.php">Supprimer une séance</a>
                 </div>
             </div>
+            <a href="../PAGES/presence.php">Fiche de présence</a>
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>

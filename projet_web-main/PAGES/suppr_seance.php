@@ -48,7 +48,7 @@
                     <a href="suppr_seance.php">Supprimer une séance</a>
                 </div>
             </div>
-  
+            <a href="../PAGES/presence.php">Fiche de présence</a>
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>

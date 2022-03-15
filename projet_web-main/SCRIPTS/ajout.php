@@ -18,12 +18,8 @@ if (empty($classe) || empty($cours) || empty($prof) || empty($salle) || empty($d
     exit();
 }
 else {
-
-    $new_hour = intval(substr($debut, -5, 2)) + $duree;
-    $fin = str_replace(substr($debut, -5, 2), $new_hour, $debut);
-
     $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-    $req = "INSERT INTO seance VALUES (NULL, $classe, '$cours', '$prof', '$salle', '$debut', '$fin', '$duree')";
+    $req = "INSERT INTO seance VALUES (NULL, $classe, '$cours', '$prof', '$salle', '$debut', '$fin')";
     $result=requeteSelect($cnx, $req);
 
 

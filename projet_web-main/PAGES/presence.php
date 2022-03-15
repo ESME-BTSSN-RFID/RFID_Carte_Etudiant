@@ -81,7 +81,7 @@ if (isset($_SESSION['idCand'])){
 
         ?>
 
-        <form action="../SCRIPTS/edt.php" action="GET">
+        <form action="../SCRIPTS/edt2.php" action="GET">
             <select name="classe" >
                 <option value="">--Choisir une classe--</option>
                 <?php
@@ -168,14 +168,9 @@ if (isset($_SESSION['idCand'])){
                                 echo utf8_encode($line[2])."</br>";
                                 echo utf8_encode($line[1]);?>
 
-                                <form action='../PAGES/Resultat_Modifier.php' method='GET'>
-                                    </br><button name='idSeance' value='<?php echo $line[0]?>'>Modifier</button>
+                                <form action='../PAGES/presence2.php' method='GET'>
+                                    </br><button name='idSeance' value='<?php echo $line[0]?>'>Présence</button>
                                 </form>
-
-                                <form action='../SCRIPTS/suppr.php' method='POST'>
-                                    </br><button name='idSeance' value='<?php echo $line[0]?>'>Supprimer</button>
-                                </form>
-                                
 
                                 <?php
                                 //remove the line from the array

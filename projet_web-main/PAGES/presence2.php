@@ -3,24 +3,16 @@ session_start();
 include_once('../SCRIPTS/Modele.php');
 if (isset($_SESSION['idCand'])){
     $idCand = $_SESSION['idCand'];
-    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-    if($idCand==0){
-        $req="SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;";
-        $result=requeteSelect($cnx, $req);
-    }
-    else{
-        $req = "SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;"; 
-        $result=requeteSelect($cnx, $req);
-    }
-?>
 
+    $seance=$_GET['idSeance'];
+?>
 
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&ampdisplay=swap" rel="stylesheet"> 
-    <title>Liste</title>
+    <title>Fiche de présence</title>
     <link rel="stylesheet" href="../CSS/style_visu3.css">
     <link rel="icon" href="../favicon.png ">
 </head>
@@ -44,7 +36,7 @@ if (isset($_SESSION['idCand'])){
             else{
                 ?><a href="Visu_tab_IC.php">Informations</a><?php
             }?>
-
+  
             <div class="dropdown">
                 <button class="dropbtn">Menu cours
                 <i class="arrow down"></i>
@@ -59,35 +51,59 @@ if (isset($_SESSION['idCand'])){
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
     </header>
+
     <section>
-    <?php if (isset($_GET['succes'])){ ?>
-     		<p class="succes"><?php echo $_GET['succes']; ?></p>
-     	    <?php } ?>
-             
-        <table class="tableau">
-            <tr>
-                <th>Carte Etudiant</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Classe</th>
-            </tr>
+
 
             <?php
-            foreach($result as $ligne){
-                echo "<tr>"."<td>".$ligne['idCarteEtudiant']."</td>"."<td>".$ligne['nom']."</td>"."<td>".$ligne['prenom']."</td>"."<td>".$ligne['label']."</td>";
-                echo "\n";
-            }
+            $i = 0;
+            $sql2 = "SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf WHERE idSeance = $seance;";
+            $msg = $bdd->prepare($sql2);
+            $msg = $bdd->execute(array($_POST['classe']));               
             ?>
-    
-        </table>       
+            <form method="post" action="surveillant.prendre_absence3.php">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Nom</th>
+                            <th>Prénom(s)</th>
+                            <th>Date de naissance</th>
+                            <th>Lieu de naissance</th>
+                            <th>Absent(e)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            <?php
+            while($dd = $msg->fetch() )
+                {
+            ?>
+                        <tr>
+                            <td><?php echo $i; ?></td>
+                            <td><?php echo $dd['nom']; ?></td>
+                            <td><?php echo $dd['prenom'];?></td>         
+                            <td><?php echo $dd['ddn']; ?></td>
+                            <td><?php echo $dd['lieu']; ?></td>
+                            <td><input type="checkbox" name="statut[]" value=""<?php echo $dd['id']; ?>></td>
+                        </tr>
+            <?php
+                $i++;
+                }
+            ?>
+                    </tbody>
+                </table>
+                <input type='submit' value='Envoyer !' >
+            <form>
+
+        
+        
     </section>
 </body>
 </html>
-
 <?php
 }else{
     header("Location: ../PAGES/index.php");
+    echo "test 3";
     exit();
 }
-
 ?>
