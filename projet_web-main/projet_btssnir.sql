@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : ven. 11 mars 2022 à 15:31
+-- Généré le : mar. 15 mars 2022 à 15:22
 -- Version du serveur :  5.7.31
 -- Version de PHP : 7.3.21
 
@@ -106,6 +106,7 @@ INSERT INTO `eleve` (`idCarteEtudiant`, `nom`, `prenom`, `idClass`) VALUES
 ('1234', 'Bon bah', 'go au naan', 1),
 ('17', 'Cridlig', 'Hugo', 1),
 ('202', 'Vercelonne', 'Hugo', 1),
+('548', 'Ã©Ã©Ã©Ã©', 'Ã©Ã©Ã©Ã©', 1),
 ('852', 'De almeida vaz', 'Alexandre', 1),
 ('96', 'LESGOO', 'AU NAAN', 1),
 ('ABCD1', 'Shaw', 'Martin', 1);
@@ -172,19 +173,24 @@ CREATE TABLE IF NOT EXISTS `seance` (
   `idSalle` int(11) NOT NULL,
   `heureDebut` varchar(20) NOT NULL,
   `heureFin` varchar(20) NOT NULL,
+  `duree` int(4) NOT NULL,
   PRIMARY KEY (`idSeance`),
   KEY `idClass` (`idClass`),
   KEY `idCours` (`idCours`),
   KEY `idProf` (`idProf`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `seance`
 --
 
-INSERT INTO `seance` (`idSeance`, `idClass`, `idCours`, `idProf`, `idSalle`, `heureDebut`, `heureFin`) VALUES
-(25, 1, 2, 1, 2, '2022-03-11T16:05', '2022-03-11T18:05'),
-(28, 2, 1, 1, 1, '2022-03-08T16:10', '2022-03-08T18:10');
+INSERT INTO `seance` (`idSeance`, `idClass`, `idCours`, `idProf`, `idSalle`, `heureDebut`, `heureFin`, `duree`) VALUES
+(25, 1, 2, 1, 2, '2022-03-11T16:05', '2022-03-11T18:05', 2),
+(28, 2, 1, 1, 1, '2022-03-08T16:10', '2022-03-08T18:10', 2),
+(29, 1, 5, 1, 3, '2022-03-01T13:27', '2022-03-13T14:27', 1),
+(30, 1, 1, 1, 3, '2022-03-03T13:00', '2022-03-03T14:00', 1),
+(34, 1, 1, 1, 2, '2022-03-14T10:00', '2022-03-14T12:00', 2),
+(35, 1, 2, 1, 3, '2022-03-16T16:00', '2022-03-18T18:00', 2);
 
 -- --------------------------------------------------------
 
