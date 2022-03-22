@@ -68,7 +68,7 @@
                                 $debut = substr($ligne['heureDebut'], 11);
                                 $fin = substr($ligne['heureFin'], 11);
                                 $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');?>
-                        <option value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ".$ligne['matiere']." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></option>
+                        <option value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ". utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></option>
                             <?php }?>
                     </select>
                 </td>

@@ -1,10 +1,13 @@
 <?php
+
 session_start();
 include_once('../SCRIPTS/Modele.php');
 if (isset($_SESSION['idCand'])){
     $idCand = $_SESSION['idCand'];
+    $classe = isset($_GET['idClass']) ? $_GET['idClass'] : 2;
+    //$classe=$_GETT['idClass'];
 
-    $seance=$_GET['idSeance'];
+    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
 ?>
 
 <!DOCTYPE html>
@@ -53,46 +56,36 @@ if (isset($_SESSION['idCand'])){
     </header>
 
     <section>
-
-
-            <?php
-            $i = 0;
-            $sql2 = "SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf WHERE idSeance = $seance;";
-            $msg = $bdd->prepare($sql2);
-            $msg = $bdd->execute(array($_POST['classe']));               
-            ?>
-            <form method="post" action="surveillant.prendre_absence3.php">
-                <table class="table table-bordered table-striped">
+            <form action="absent.php" method="POST">
+                <table class="tableau">
                     <thead>
                         <tr>
-                            <th>id</th>
+                            <th>Carte Etudiant</th>
                             <th>Nom</th>
-                            <th>Prénom(s)</th>
-                            <th>Date de naissance</th>
-                            <th>Lieu de naissance</th>
+                            <th>Prénom</th>
                             <th>Absent(e)</th>
                         </tr>
                     </thead>
                     <tbody>
+
             <?php
-            while($dd = $msg->fetch() )
-                {
+            $req = "SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve WHERE idClass = $classe";      
+            $result=requeteSelect($cnx, $req);
+            $result = $result -> fetchAll();
+            foreach($result as $ligne){
             ?>
                         <tr>
-                            <td><?php echo $i; ?></td>
-                            <td><?php echo $dd['nom']; ?></td>
-                            <td><?php echo $dd['prenom'];?></td>         
-                            <td><?php echo $dd['ddn']; ?></td>
-                            <td><?php echo $dd['lieu']; ?></td>
-                            <td><input type="checkbox" name="statut[]" value=""<?php echo $dd['id']; ?>></td>
+                            <td><?php echo $ligne['idCarteEtudiant']; ?></td>
+                            <td><?php echo $ligne['nom']; ?></td>
+                            <td><?php echo $ligne['prenom'];?></td> 
+                            <td><input type="checkbox" name="statut[]" value=""<?php echo $ligne['idCarteEtudiant']; ?>></td>
                         </tr>
             <?php
-                $i++;
                 }
             ?>
-                    </tbody>
                 </table>
-                <input type='submit' value='Envoyer !' >
+                    </tbody>
+                    <td><center><input type='submit' value='Envoyer'></td>
             <form>
 
         

@@ -11,7 +11,7 @@
 <body>
     <form action="../SCRIPTS/verif_login3.php" method="POST">
         <fieldset>
-            <legend>Login</legend>
+            <legend>Connexion</legend>
             
             <?php if (isset($_GET['error'])) { ?>
      		<p class="error"><?php echo $_GET['error']; ?></p>

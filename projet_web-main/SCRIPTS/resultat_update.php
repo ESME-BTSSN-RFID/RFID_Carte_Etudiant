@@ -10,22 +10,23 @@ $cours=$_GET['idCours'];
 $prof=$_GET['idProf'];
 $salle=$_GET['idSalle'];
 $debut=$_GET['heureDebut'];
-$fin=$_GET['heureFin'];
+$duree=$_GET['duree'];
 
-//$tab = array($anglais => 3, $cg => 4, $francais => 2, $info => 1, $maths => 6, $physique => 5);
 
-if (empty($seance) || empty($classe) || empty($cours) || empty($prof)|| empty($salle) || empty($debut) || empty($fin)) {
-    header("Location: Resultat_Modifier.php?error=Veuillez compléter tous les champs&idSeance=$seance&cours=$idCours&idProf=$prof&idSalle=$salle&heureDebut=$debut&heureFin=$fin");
+if (empty($classe) || empty($cours) || empty($prof)|| empty($salle) || empty($debut) || empty($duree)) {
+    header("Location: ../PAGES/Resultat_Modifier.php?error=Veuillez compléter tous les champs&idSeance=$seance&cours=$idCours&idProf=$prof&idSalle=$salle&heureDebut=$debut&duree=$duree");
     exit();
 }
 else{
+
+    $new_hour = intval(substr($debut, -5, 2)) + $duree;
+    $fin = str_replace(substr($debut, -5, 2), $new_hour, $debut);
+
     $cnx=Connexion("localhost", "projet_btssnir", "root", "");
-    
-    foreach($tab as $key => $value){
-        $req="UPDATE seance SET idClass='$classe', idCours='$cours', idProf='$prof', idSalle='$salle', heureDebut='$debut', heureFin='$fin' WHERE idSeance='$seance'";
-        $result=requeteSelect($cnx, $req);
-    }
-    header("Location: Visu_tab_R.php?succes=Une ligne modifiée");
+    $req="UPDATE seance SET idClass='$classe', idCours='$cours', idProf='$prof', idSalle='$salle', heureDebut='$debut', heureFin='$fin', duree='$duree' WHERE idSeance='$seance'";
+    $result=requeteSelect($cnx, $req);
+
+    header("Location: ../PAGES/Visu_tab_R.php?succes=Une ligne modifiée$seance");
 }
 
 
