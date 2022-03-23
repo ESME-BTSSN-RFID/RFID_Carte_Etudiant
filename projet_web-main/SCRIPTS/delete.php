@@ -16,7 +16,7 @@ if(!empty($idCand)){
     $req = "DELETE FROM eleve WHERE idCarteEtudiant= '$idCand'";
     $result=requeteSelect($cnx, $req);
     
-    header("Location: ../PAGES/Visu_tab_IC.php?succes=Donnée de l'étudiant supprimée avec succès");
+    header("Location: ../PAGES/Supprimer.php?succes=Donnée de l'étudiant supprimée avec succès");
 }
 else {
     header("Location: ../PAGES/Supprimer.php?error=Veuillez sélectionner un étudiant");
