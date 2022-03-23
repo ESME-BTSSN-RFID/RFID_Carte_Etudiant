@@ -1,5 +1,12 @@
 <?php
 require_once('Modele.php');
+require_once('DotEnv.php');
+
+(new DotEnv(__DIR__ . '../../../.env'))->load();
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
 
 $idCand=$_GET['idCarteEtudiant'];
 $nom=$_GET['nom'];
@@ -18,7 +25,7 @@ if (empty($idCand) || empty($nom) || empty($prenom) || empty($classe)) {
     exit();
 }
 else {
-    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+    $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
     $req = "INSERT INTO eleve VALUES ($idCand, '$nom', '$prenom', '$classe')";
     $result=requeteSelect($cnx, $req);
 /*

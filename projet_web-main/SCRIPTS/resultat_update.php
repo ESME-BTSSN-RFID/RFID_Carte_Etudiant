@@ -3,6 +3,13 @@ session_start();
 $idCand_resultat=$_SESSION['idCand_resultat'];
 
 require_once('Modele.php');
+require_once('DotEnv.php');
+
+(new DotEnv(__DIR__ . '../../../.env'))->load();
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
 
 $seance=$_GET['idSeance'];
 $classe=$_GET['idClass'];
@@ -19,7 +26,7 @@ if (empty($seance) || empty($classe) || empty($cours) || empty($prof)|| empty($s
     exit();
 }
 else{
-    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+    $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
     
     foreach($tab as $key => $value){
         $req="UPDATE seance SET idClass='$classe', idCours='$cours', idProf='$prof', idSalle='$salle', heureDebut='$debut', heureFin='$fin' WHERE idSeance='$seance'";
