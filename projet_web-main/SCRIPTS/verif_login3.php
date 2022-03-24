@@ -3,7 +3,7 @@ session_start();
 require_once('Modele.php');
 require_once('DotEnv.php');
 
-(new DotEnv(__DIR__ . '../../../.env'))->load();
+(new DotEnv("/var/www/html/.env"))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -24,19 +24,18 @@ if((isset($_POST['login'])) && (isset($_POST['password']))){
         exit();
     }
     else {
-        $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+        $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
         $req = "SELECT * FROM utilisateur";
         $result=requeteSelect($cnx, $req);
-        print_r($result);
+        //print_r($result);
         
         
         foreach($result as $ligne){
                 if($ligne['login']==$login && $ligne['password']==$password){
                     $_SESSION['idCand'] = $ligne[0];
                     $_SESSION['nom']=$ligne[1];
-                    $_SESSION['nom']=$ligne[2];
-                    header("Location: ../PAGES/Visu_tab_IC.php");
-                    exit();
+                    //$_SESSION['nom']=$ligne[2];
+                    exit(header("Location: ../PAGES/Visu_tab_IC.php"));
                 }   
         }
         
