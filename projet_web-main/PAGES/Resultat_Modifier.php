@@ -2,10 +2,17 @@
 session_start();
 $idCand = $_SESSION['idCand'];
 require_once('../SCRIPTS/Modele.php');
+require_once('../SCRIPTS/DotEnv.php');
+
+(new DotEnv(__DIR__ . '../../../.env'))->load();
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
 
 $seance=$_GET['idSeance'];
 
-$cnx = Connexion("localhost", "projet_btssnir", "root", "");
+$cnx = Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
 
 /*$req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
 $result=requeteSelect($cnx, $req);*/
@@ -56,7 +63,7 @@ $result=requeteSelect($cnx, $req);*/
         </nav>
     </header>
 
-    <form action="../SCRIPTS/resultat_update.php" method="GET"> 
+    <form action="../SCRIPTS/resultat_update.php"+$seance method="GET"> 
         <table class="mod">
             <tr>
                 <th>Cours</th>
@@ -65,7 +72,7 @@ $result=requeteSelect($cnx, $req);*/
                 <th>Professeur</th>
                 <th>Salle</th>
                 <th>Heure de début</th>
-                <th>Heure de fin</th>
+                <th>Durée</th>
             </tr>
             <tr>
                 <td><?php $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf WHERE idSeance = $seance;";
@@ -76,9 +83,10 @@ $result=requeteSelect($cnx, $req);*/
                                 $day = date('l', $timestamp);
                                 $debut = substr($ligne['heureDebut'], 11);
                                 $fin = substr($ligne['heureFin'], 11);
-                                $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');}?>
+                                $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');?>
 
-                    <label><?php echo $ligne['label']." ".utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></label>
+                    <label value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ".utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></label>
+                    <?php }?>   
                 </td>
                 <td>
                     <select name="idClass">
@@ -121,8 +129,7 @@ $result=requeteSelect($cnx, $req);*/
                     </select>
                 </td>
                 <td><input type='datetime-local' name="heureDebut"></td>
-                <td><input type='datetime-local' name="heureFin"></td>
-        
+                <td><input type='number' name="duree" min="1" max="10"></td>        
                 <td><input type='submit'></td>
             </tr>
         </table>

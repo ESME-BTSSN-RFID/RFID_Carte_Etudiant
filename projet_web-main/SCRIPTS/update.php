@@ -3,6 +3,13 @@ session_start();
 $val=$_SESSION['val'];
 
 require_once('Modele.php');
+require_once('DotEnv.php');
+
+(new DotEnv(__DIR__ . '../../../.env'))->load();
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
 
 $idCarteEtudiant=$_GET['idCarteEtudiant'];
 $nom=$_GET['nom'];
@@ -14,7 +21,7 @@ if (empty($idCarteEtudiant) || empty($nom) || empty($prenom) || empty($idClass))
     exit();
 }
 else{
-    $cnx= Connexion("localhost", "projet_btssnir", "root", "");
+    $cnx= Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
     $req = "UPDATE eleve SET nom='$nom', prenom='$prenom', idClass=$idClass WHERE idCarteEtudiant='$idCarteEtudiant'";
     $result=requeteSelect($cnx, $req);
 

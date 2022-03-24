@@ -1,9 +1,17 @@
 <?php
     require_once('../SCRIPTS/Modele.php');
+    require_once('../SCRIPTS/DotEnv.php');
+
+    (new DotEnv(__DIR__ . '../../../.env'))->load();
+    $DB_HOST = getenv('DB_HOST');
+    $DB_NAME = getenv('DB_NAME');
+    $DB_USER = getenv('DB_USER');
+    $DB_PASS = getenv('DB_PASS');
+
     session_start();
     $idCand = $_SESSION['idCand'];
 
-    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+    $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
     $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
     $result=requeteSelect($cnx, $req);
 ?>
@@ -68,7 +76,7 @@
                                 $debut = substr($ligne['heureDebut'], 11);
                                 $fin = substr($ligne['heureFin'], 11);
                                 $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');?>
-                        <option value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ".$ligne['matiere']." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></option>
+                        <option value="<?php echo $ligne['idSeance'] ?>"><?php echo $ligne['label']." ". utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></option>
                             <?php }?>
                     </select>
                 </td>

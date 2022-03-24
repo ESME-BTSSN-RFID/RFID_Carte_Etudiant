@@ -1,6 +1,14 @@
 <?php
 session_start();
 include_once('../SCRIPTS/Modele.php');
+require_once('../SCRIPTS/DotEnv.php');
+
+(new DotEnv(__DIR__ . '../../../.env'))->load();
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
+
 if (isset($_SESSION['idCand'])){
     $idCand = $_SESSION['idCand'];
 ?>
@@ -52,7 +60,7 @@ if (isset($_SESSION['idCand'])){
     <section>
 
         <?php
-            $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+            $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
             $req = "SELECT * FROM classe";
             $result=requeteSelect($cnx, $req);     
             
@@ -160,7 +168,7 @@ if (isset($_SESSION['idCand'])){
                         echo "</td>";
                     }
                     elseif(in_array(strval($week_array[$j-1]."T".$hour.":00"), $array_cell)){
-                        echo "heloo";
+                        echo "bonjout";
                     }
                     else{
                         //With $hour and date in $week_array compare in database
@@ -191,14 +199,13 @@ if (isset($_SESSION['idCand'])){
                     
                                 if($line[6] >1){
                                     for($k=2; $k<=$line[6]; $k++){
-                                        $new_hour = $line[4];                        
-                                        
+                                        $new_hour = $line[4];
                                         //echo str_replace(substr($line[5], -5, 2), $i-1, $new_hour);
                                         if(strlen($i+1) == 1){
-                                            array_push($array_cell, str_replace(substr($line[4], -5, 2), "0".strval($i+1), $new_hour));
+                                            array_push($array_cell, str_replace(substr($line[4], -5, 2), "0".strval($i+$k-1), $new_hour));
                                         }
                                         else{
-                                            array_push($array_cell, str_replace(substr($line[4], -5, 2), $i+1, $new_hour));
+                                            array_push($array_cell, str_replace(substr($line[4], -5, 2), $i+$k-1, $new_hour));
                                         }
                                         
                                     }
@@ -226,7 +233,7 @@ if (isset($_SESSION['idCand'])){
                 }
                 echo "</tr>";
             }
-
+            print_r($array_cell);
             ?>
         
     </section>
