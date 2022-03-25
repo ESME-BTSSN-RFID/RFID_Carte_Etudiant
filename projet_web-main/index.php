@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="CSS\style_index.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet"> 
-    <title>Login</title>
+    <title>Connexion</title>
 </head>
 <body>
     <form action="SCRIPTS/verif_login3.php" method="POST">
         <fieldset>
-            <legend>Login</legend>
+            <legend>Connexion</legend>
             
             <?php if (isset($_GET['error'])) { ?>
      		<p class="error"><?php echo $_GET['error']; ?></p>

@@ -3,7 +3,7 @@ session_start();
 include_once('../SCRIPTS/Modele.php');
 require_once('../SCRIPTS/DotEnv.php');
 
-(new DotEnv(__DIR__ . '../../../.env'))->load();
+(new DotEnv('../.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -60,7 +60,7 @@ if (isset($_SESSION['idCand'])){
     <section>
 
         <?php
-            $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+            $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
             $req = "SELECT * FROM classe";
             $result=requeteSelect($cnx, $req);     
             
@@ -168,7 +168,7 @@ if (isset($_SESSION['idCand'])){
                         echo "</td>";
                     }
                     elseif(in_array(strval($week_array[$j-1]."T".$hour.":00"), $array_cell)){
-                        echo "bonjout";
+                
                     }
                     else{
                         //With $hour and date in $week_array compare in database
@@ -179,7 +179,6 @@ if (isset($_SESSION['idCand'])){
                             $string_hour = substr($line["heureDebut"], 11, 2);
                                                         
                             if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
-                            echo $line[6];
                                 echo "<td rowspan='$line[6]'>";
                                 //echo "<td rowspan='$line[6]'>";
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
@@ -233,7 +232,6 @@ if (isset($_SESSION['idCand'])){
                 }
                 echo "</tr>";
             }
-            print_r($array_cell);
             ?>
         
     </section>
@@ -242,7 +240,6 @@ if (isset($_SESSION['idCand'])){
 <?php
 }else{
     header("Location: ../PAGES/index.php");
-    echo "test 3";
     exit();
 }
 ?>

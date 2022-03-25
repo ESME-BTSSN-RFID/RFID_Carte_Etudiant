@@ -2,7 +2,7 @@
 require_once('Modele.php');
 require_once('DotEnv.php');
 
-(new DotEnv(__DIR__ . '../../../.env'))->load();
+(new DotEnv('../.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -25,7 +25,7 @@ else {
     $new_hour = intval(substr($debut, -5, 2)) + $duree;
     $fin = str_replace(substr($debut, -5, 2), $new_hour, $debut);
 
-    $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+    $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
     $req = "INSERT INTO seance VALUES (NULL, $classe, '$cours', '$prof', '$salle', '$debut', '$fin', '$duree')";
     $result=requeteSelect($cnx, $req);
 

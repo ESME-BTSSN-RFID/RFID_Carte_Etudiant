@@ -3,7 +3,7 @@ session_start();
 require_once('Modele.php');
 require_once('DotEnv.php');
 
-(new DotEnv(__DIR__ . '../../../.env'))->load();
+(new DotEnv('../.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -16,15 +16,15 @@ if((isset($_POST['login'])) && (isset($_POST['password']))){
     
 
     if(empty($login)){
-        header("Location: ../PAGES/index.php?error=L'adresse mail est requise");
+        header("Location: ../index.php?error=L'adresse mail est requise");
         exit();
     }
     elseif(empty($password)){
-        header("Location: ../PAGES/index.php?error=Le mot de passe est requis");
+        header("Location: ../index.php?error=Le mot de passe est requis");
         exit();
     }
     else {
-        $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+        $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
         $req = "SELECT * FROM utilisateur";
         $result=requeteSelect($cnx, $req);
         print_r($result);
@@ -40,13 +40,13 @@ if((isset($_POST['login'])) && (isset($_POST['password']))){
                 }   
         }
         
-        header("Location: ../PAGES/index.php?error=Email ou mot de passe incorrect");
+        header("Location: ../index.php?error=Email ou mot de passe incorrect");
         exit();
     }
 
 }
 else{
-    header("Location: ../PAGES/index.php?error");
+    header("Location: ../index.php?error");
     exit;
 }
 

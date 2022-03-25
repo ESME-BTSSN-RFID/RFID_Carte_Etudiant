@@ -2,12 +2,20 @@
 
 session_start();
 include_once('../SCRIPTS/Modele.php');
+require_once('../SCRIPTS/DotEnv.php');
+
+(new DotEnv('../.env'))->load();
+$DB_HOST = getenv('DB_HOST');
+$DB_NAME = getenv('DB_NAME');
+$DB_USER = getenv('DB_USER');
+$DB_PASS = getenv('DB_PASS');
+
 if (isset($_SESSION['idCand'])){
     $idCand = $_SESSION['idCand'];
     $classe = isset($_GET['idClass']) ? $_GET['idClass'] : 2;
     //$classe=$_GETT['idClass'];
 
-    $cnx=Connexion("localhost", "projet_btssnir", "root", "");
+    $cnx = Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
 ?>
 
 <!DOCTYPE html>

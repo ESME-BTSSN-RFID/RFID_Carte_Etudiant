@@ -2,7 +2,7 @@
     require_once('../SCRIPTS/Modele.php');
     require_once('../SCRIPTS/DotEnv.php');
 
-    (new DotEnv(__DIR__ . '../../../.env'))->load();
+    (new DotEnv('../.env'))->load();
     $DB_HOST = getenv('DB_HOST');
     $DB_NAME = getenv('DB_NAME');
     $DB_USER = getenv('DB_USER');
@@ -11,7 +11,7 @@
     session_start();
     $idCand = $_SESSION['idCand'];
 
-    $cnx=Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
+    $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
     $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf;";
     $result=requeteSelect($cnx, $req);
 ?>
