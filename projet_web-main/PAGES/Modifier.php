@@ -55,7 +55,6 @@ $cnx = Connexion($DB_HOST, $DB_NAME, $DB_USER, $DB_PASS);
                 <div class="dropdown-content">
                     <a href="Visu_tab_R.php">Emploi du temps</a>
                     <a href="ajoutSeance.php">Ajouter une séance</a>
-                    <a href="suppr_seance.php">Supprimer une séance</a>
                 </div>
             </div>
             <a href="../PAGES/presence.php">Fiche de présence</a>
