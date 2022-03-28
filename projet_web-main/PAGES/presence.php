@@ -1,8 +1,6 @@
 <?php
-
 session_start();
 include_once('../SCRIPTS/Modele.php');
-
 require_once('../SCRIPTS/DotEnv.php');
 
 (new DotEnv('../.env'))->load();
@@ -62,7 +60,7 @@ if (isset($_SESSION['idCand'])){
     <section>
 
         <?php
-            $cnx = Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
+            $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
             $req = "SELECT * FROM classe";
             $result=requeteSelect($cnx, $req);     
             
@@ -90,7 +88,7 @@ if (isset($_SESSION['idCand'])){
 
         ?>
 
-        <form action="../SCRIPTS/edt2.php" action="GET">
+        <form action="../SCRIPTS/edt.php" action="GET">
             <select name="classe" >
                 <option value="">--Choisir une classe--</option>
                 <?php
@@ -129,10 +127,10 @@ if (isset($_SESSION['idCand'])){
             $month_array = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
             echo "<p>Semaine du ".substr($first_of_week, 8, 2)." ".$month_array[substr($first_of_week, 5, 2)-1]." au ".substr($last_of_week, 8, 2)." ".$month_array[substr($last_of_week, 5, 2)-1]."</p>";
 
-            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, c.idClass FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
+            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, s.duree, k.room FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN salle k ON s.idSalle=k.idSalle INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
             $result=requeteSelect($cnx, $req);
             $result = $result -> fetchAll();
-
+            
             
             $actual_date = date('Y-m-d', time());
             /*$timestamp = strtotime($actual_date);
@@ -151,12 +149,14 @@ if (isset($_SESSION['idCand'])){
                 echo "     ". substr($line["dateDebut"], 0, 10);
                 echo "     ". substr($line["dateDebut"], 11);
             }*/
+            
+            $array_cell = array();
 
             for($i=8; $i<=18; $i++){
                 echo "<tr>";
                 for($j=0; $j<=7; $j++){
-                    echo "<td>";
                     if($j == 0){
+                        echo "<td>";
                         if(strlen($i) == 1){
                             $hour = "0".$i;
                             echo $hour."h00";
@@ -165,36 +165,70 @@ if (isset($_SESSION['idCand'])){
                             $hour = $i;
                             echo $hour."h00";
                         }
+                        echo "</td>";
+                    }
+                    elseif(in_array(strval($week_array[$j-1]."T".$hour.":00"), $array_cell)){
+                
                     }
                     else{
                         //With $hour and date in $week_array compare in database
+                        $flag = false;
+                    
                         foreach($result as $x=>$line){
                             $string_date = substr($line["heureDebut"], 0, 10);
                             $string_hour = substr($line["heureDebut"], 11, 2);
                                                         
                             if ($string_date == $week_array[$j-1]  && $string_hour == $hour) {
+                                echo "<td rowspan='$line[6]'>";
+                                //echo "<td rowspan='$line[6]'>";
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
                                 echo utf8_encode($line[2])."</br>";
                                 echo utf8_encode($line[1])."</br>";
-                                echo utf8_encode($line[3]);?>
+                                echo utf8_encode($line[3])."</br>";
+                                echo utf8_decode($line[7]); ?>
 
                                 <form action='../PAGES/presence2.php' method='GET'>
-                                    </br><button name='idClass' value='<?php echo $line[6]?>'>Présence</button>
+                                    </br><button name='idClass' value='<?php echo $line[6]?>'>Presence</button>
                                 </form>
 
-                                <?php
+                                <?php 
+                    
+                                if($line[6] >1){
+                                    for($k=2; $k<=$line[6]; $k++){
+                                        $new_hour = $line[4];
+                                        //echo str_replace(substr($line[5], -5, 2), $i-1, $new_hour);
+                                        if(strlen($i+1) == 1){
+                                            array_push($array_cell, str_replace(substr($line[4], -5, 2), "0".strval($i+$k-1), $new_hour));
+                                        }
+                                        else{
+                                            array_push($array_cell, str_replace(substr($line[4], -5, 2), $i+$k-1, $new_hour));
+                                        }
+                                        
+                                    }
+                                }
+
                                 //remove the line from the array
-                                unset($result[$x]);
+                                //unset($result[$x]);
+
+                                echo "</td>";
+                                $flag = true;
+                                break 1;
                             }
+                            
+                           
+                            
+                        }
+                        if(!$flag){
+                            echo "<td>";
+                            echo "</td>";
                         }
                         
                     }
 
-                    echo "</td>";
+                    
                 }
                 echo "</tr>";
             }
-
             ?>
         
     </section>
@@ -203,7 +237,6 @@ if (isset($_SESSION['idCand'])){
 <?php
 }else{
     header("Location: ../PAGES/index.php");
-    echo "test 3";
     exit();
 }
 ?>

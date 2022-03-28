@@ -74,7 +74,7 @@ $result=requeteSelect($cnx, $req);*/
                 <th>Durée</th>
             </tr>
             <tr>
-                <td><?php $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf WHERE idSeance = $seance;";
+                <td><?php $req="SELECT idSeance, c.label, m.matiere, p.nom, p.prenom, heureDebut, heureFin, k.room FROM seance AS s INNER JOIN classe AS c ON s.idClass = c.idClass INNER JOIN salle k ON k.idSalle=s.idSalle INNER JOIN cours AS m ON s.idCours = m.idCours INNER JOIN prof AS p ON s.idProf = p.idProf WHERE idSeance = $seance;";
                             $result=requeteSelect($cnx, $req);
                             foreach($result as $ligne){
                                 $date = substr($ligne['heureDebut'], 0, 10);
@@ -84,7 +84,7 @@ $result=requeteSelect($cnx, $req);*/
                                 $fin = substr($ligne['heureFin'], 11);
                                 $tab = array('Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche');?>
 
-                    <label value="<?php echo $ligne['idSeance'] ?>" ><?php echo $ligne['label']." ".utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$tab[$day]." - ".$debut." à ".$fin?></label>
+                    <label value="<?php echo $ligne['idSeance'] ?>" ><?php echo $ligne['label']." ".utf8_encode($ligne['matiere'])." ".$ligne['nom']." ".$ligne[7]." ".$tab[$day]." - ".$debut." à ".$fin?></label>
                     <?php $_SESSION['idSeance']=$ligne['idSeance'];}?>   
                 </td>
                 <td>

@@ -127,7 +127,7 @@ if (isset($_SESSION['idCand'])){
             $month_array = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
             echo "<p>Semaine du ".substr($first_of_week, 8, 2)." ".$month_array[substr($first_of_week, 5, 2)-1]." au ".substr($last_of_week, 8, 2)." ".$month_array[substr($last_of_week, 5, 2)-1]."</p>";
 
-            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, s.duree FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
+            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, s.duree, k.room FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN salle k ON s.idSalle=k.idSalle INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
             $result=requeteSelect($cnx, $req);
             $result = $result -> fetchAll();
             
@@ -183,7 +183,9 @@ if (isset($_SESSION['idCand'])){
                                 //echo "<td rowspan='$line[6]'>";
                                 echo substr($line[4], 11)." - ".substr($line[5], 11)."</br>";
                                 echo utf8_encode($line[2])."</br>";
-                                echo utf8_encode($line[1]);?>
+                                echo utf8_encode($line[1])."</br>";
+                                echo utf8_decode($line[3])."</br>";
+                                echo utf8_decode($line[7]); ?>
 
                                 <form action='../PAGES/Resultat_Modifier.php' method='GET'>
                                     </br><button name='idSeance' value='<?php echo $line[0]?>'>Modifier</button>
