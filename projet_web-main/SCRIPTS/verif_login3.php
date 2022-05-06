@@ -26,9 +26,7 @@ if((isset($_POST['login'])) && (isset($_POST['password']))){
     else {
         $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
         $req = "SELECT * FROM utilisateur";
-        $result=requeteSelect($cnx, $req);
-        print_r($result);
-        
+        $result=requeteSelect($cnx, $req);        
         
         foreach($result as $ligne){
                 if($ligne['login']==$login && $ligne['password']==$password){

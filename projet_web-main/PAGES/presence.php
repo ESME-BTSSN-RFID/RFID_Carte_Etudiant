@@ -88,7 +88,7 @@ if (isset($_SESSION['idCand'])){
 
         ?>
 
-        <form action="../SCRIPTS/edt.php" action="GET">
+        <form action="../SCRIPTS/edt2.php" action="GET">
             <select name="classe" >
                 <option value="">--Choisir une classe--</option>
                 <?php
@@ -127,7 +127,7 @@ if (isset($_SESSION['idCand'])){
             $month_array = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
             echo "<p>Semaine du ".substr($first_of_week, 8, 2)." ".$month_array[substr($first_of_week, 5, 2)-1]." au ".substr($last_of_week, 8, 2)." ".$month_array[substr($last_of_week, 5, 2)-1]."</p>";
 
-            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, s.duree, k.room FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN salle k ON s.idSalle=k.idSalle INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
+            $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, s.duree, k.room, c.idClass FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN salle k ON s.idSalle=k.idSalle INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
             $result=requeteSelect($cnx, $req);
             $result = $result -> fetchAll();
             
@@ -185,10 +185,14 @@ if (isset($_SESSION['idCand'])){
                                 echo utf8_encode($line[2])."</br>";
                                 echo utf8_encode($line[1])."</br>";
                                 echo utf8_encode($line[3])."</br>";
-                                echo utf8_decode($line[7]); ?>
+                                echo utf8_decode($line[7]);
+                                ?>
 
                                 <form action='../PAGES/presence2.php' method='GET'>
-                                    </br><button name='idClass' value='<?php echo $line[6]?>'>Presence</button>
+                                    </br><button name='idClass' value='<?php echo $line[8]?>'>Presence</button>
+                                    <input type="hidden" name="date" value="<?php echo $string_date ?>">
+                                    <input type="hidden" name="hour" value="<?php echo $hour ?>">
+                                    <input type="hidden" name="duree" value="<?php echo $line['duree'] ?>">
                                 </form>
 
                                 <?php 

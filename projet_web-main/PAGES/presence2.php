@@ -67,34 +67,69 @@ if (isset($_SESSION['idCand'])){
                 <table class="tableau">
                     <thead>
                         <tr>
-                            <th>Carte Etudiant</th>
                             <th>Nom</th>
                             <th>Prénom</th>
-                            <th>Absent(e)</th>
+                            <th>Présent(e)</th>
                         </tr>
                     </thead>
                     <tbody>
 
             <?php
-            $req = "SELECT idCarteEtudiant, nom, prenom, idClass FROM eleve WHERE idClass = $classe";      
+            $req = "SELECT idCarteEtudiant, nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass=classe.idClass WHERE eleve.idClass = $classe";      
             $result=requeteSelect($cnx, $req);
             $result = $result -> fetchAll();
+
+            echo $_GET['date']." ".$_GET['hour']."</br>";
+            $delta = $_GET['hour'] + $_GET['duree'];
+            $class = $_GET['idClass'];
+            $checked = "SELECT idCarteEtudiant FROM eleve e INNER JOIN scan s ON e.idCarteEtudiant=s.uid WHERE s.time BETWEEN '".$_GET['date'] ." ".$_GET['hour'].":00:00' AND '".$_GET['date']." ".$delta.":00:00' AND e.idClass=$class";
+            echo $checked;
+            $result_check = requeteSelect($cnx, $checked);
+            $result_check = $result_check -> fetchAll();
+            print_r($result_check);
+            echo "<br>";
+            $presence = array($classe);
             foreach($result as $ligne){
+            $label=$ligne['label'];
             ?>
                         <tr>
-                            <td><?php echo $ligne['idCarteEtudiant']; ?></td>
                             <td><?php echo $ligne['nom']; ?></td>
                             <td><?php echo $ligne['prenom'];?></td> 
-                            <td><input type="checkbox" name="statut[]" value=""<?php echo $ligne['idCarteEtudiant']; ?>></td>
+                            <td><input type="checkbox" disabled
+                            <?php
+                            
+                            foreach($result_check as $ligne_check){
+                                if($ligne_check['idCarteEtudiant'] == $ligne['idCarteEtudiant']){
+                                    echo "checked";
+                                    array_push($presence, $ligne['idCarteEtudiant']);
+                                    break;
+                                }
+                            }
+                            
+                            ?>
+                            
+                            ></td>
                         </tr>
             <?php
                 }
             ?>
+
                 </table>
                     </tbody>
-                    <td><center><input type='submit' value='Envoyer'></td>
-            <form>
 
+                    <tr><center>
+                        <td> <input type='submit' value='Envoyer'></td></form>
+                        <td> <form action="../SCRIPTS/generatePdf.php" method="POST"><button type="submit">Générer PDF</button>
+                        <input type="hidden" name="debut" value="<?php echo $_GET['date'] ." ".$_GET['hour'].":00:00" ?>">
+                        <input type="hidden" name="fin" value="<?php echo $_GET['date'] ." ".$delta.":00:00" ?>">
+                        <input type="hidden" name="classe" value="<?php echo $class ?>">
+                        <input type="hidden" name="label" value=" <?php echo $label ?>">
+                        </form></td>
+                    </tr>
+
+
+            
+    
         
         
     </section>

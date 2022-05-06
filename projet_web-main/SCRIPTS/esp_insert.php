@@ -14,7 +14,7 @@ $data = $_POST['data'];
 
 
 $cnx= Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
-$req = "INSERT INTO `test` (`id`, `uid`) VALUES (NULL, '$data')";
+$req = "INSERT INTO `scan` (`id`, `uid`, `time`) VALUES (NULL, '$data', CURRENT_TIMESTAMP)";
 $result=requeteSelect($cnx, $req);
 
 
