@@ -10,10 +10,9 @@ $DB_USER = getenv('DB_USER');
 $DB_PASS = getenv('DB_PASS');
 
 if((isset($_POST['login'])) && (isset($_POST['password']))){    
-    
+
     $login=$_POST['login'];
     $password=$_POST['password'];
-    
 
     if(empty($login)){
         header("Location: ../index.php?error=L'adresse mail est requise");
@@ -23,23 +22,30 @@ if((isset($_POST['login'])) && (isset($_POST['password']))){
         header("Location: ../index.php?error=Le mot de passe est requis");
         exit();
     }
-    else {
+    else {        
         $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
-        $req = "SELECT * FROM utilisateur";
-        $result=requeteSelect($cnx, $req);        
-        
-        foreach($result as $ligne){
-                if($ligne['login']==$login && $ligne['password']==$password){
-                    $_SESSION['idCand'] = $ligne[0];
-                    $_SESSION['nom']=$ligne[1];
-                    $_SESSION['nom']=$ligne[2];
-                    header("Location: ../PAGES/Visu_tab_IC.php");
-                    exit();
-                }   
+
+        $stmt = $cnx->prepare("SELECT password, idProf FROM `utilisateur` WHERE login= ?;");
+        $stmt->execute(array($login));
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $rowCount = $stmt->rowCount();
+
+        if($rowCount==1){
+            if(password_verify($password, $result['password'])){
+                $_SESSION['idUser'] = $result['idProf'];
+                header("Location: ../PAGES/Visu_tab_IC.php");
+                exit();
+            }
+            else{
+                header("Location: ../index.php?error=Mot de passe incorrect");
+                exit();
+            }
         }
-        
-        header("Location: ../index.php?error=Email ou mot de passe incorrect");
-        exit();
+        else {
+            header("Location: ../index.php?error=Le login n'existe pas");
+            exit();
+        }
+
     }
 
 }
@@ -47,6 +53,4 @@ else{
     header("Location: ../index.php?error");
     exit;
 }
-
-
 ?>

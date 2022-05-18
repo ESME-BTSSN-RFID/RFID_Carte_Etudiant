@@ -10,8 +10,8 @@ $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
 $DB_PASS = getenv('DB_PASS');
 
-if (isset($_SESSION['idCand'])){
-    $idCand = $_SESSION['idCand'];
+if (isset($_SESSION['idUser'])){
+    $idUser = $_SESSION['idUser'];
     $classe = isset($_GET['idClass']) ? $_GET['idClass'] : 2;
     //$classe=$_GETT['idClass'];
 
@@ -30,7 +30,7 @@ if (isset($_SESSION['idCand'])){
 <body>
     <header>
         <nav>
-            <?php if($idCand==0){?>
+            <?php if($idUser==0){?>
             <div class="dropdown">
                 <button class="dropbtn">Menu étudiant
                 <i class="arrow down"></i>
@@ -41,13 +41,7 @@ if (isset($_SESSION['idCand'])){
                     <a href="Modifier.php">Modifier les informations d'un étudiant</a>
                     <a href="Supprimer.php">Supprimer un étudiant</a>
                 </div>
-            </div> 
-            <?php
-            }
-            else{
-                ?><a href="Visu_tab_IC.php">Informations</a><?php
-            }?>
-  
+            </div>
             <div class="dropdown">
                 <button class="dropbtn">Menu cours
                 <i class="arrow down"></i>
@@ -57,6 +51,14 @@ if (isset($_SESSION['idCand'])){
                     <a href="ajoutSeance.php">Ajouter une séance</a>
                 </div>
             </div>
+            <?php
+            }
+            else{
+                ?><a href="Visu_tab_IC.php">Informations</a><?php
+                ?><a href="Visu_tab_R.php">Emploi du temps</a><?php
+            }?>
+
+            
             <a href="../PAGES/presence.php">Fiche de présence</a>
             <a href="../SCRIPTS/Logout.php">Deconnexion</a>
         </nav>
@@ -83,10 +85,8 @@ if (isset($_SESSION['idCand'])){
             $delta = $_GET['hour'] + $_GET['duree'];
             $class = $_GET['idClass'];
             $checked = "SELECT idCarteEtudiant FROM eleve e INNER JOIN scan s ON e.idCarteEtudiant=s.uid WHERE s.time BETWEEN '".$_GET['date'] ." ".$_GET['hour'].":00:00' AND '".$_GET['date']." ".$delta.":00:00' AND e.idClass=$class";
-            echo $checked;
             $result_check = requeteSelect($cnx, $checked);
             $result_check = $result_check -> fetchAll();
-            print_r($result_check);
             echo "<br>";
             $presence = array($classe);
             foreach($result as $ligne){

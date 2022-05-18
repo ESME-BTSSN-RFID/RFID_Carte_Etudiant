@@ -120,3 +120,4 @@ $pdf->FancyTable($header, $data);
 $pdf->Output('I', $label."_".substr($debut, 0, 10)."_".substr($debut, -8, 2)."h_a_".substr($fin, -8, 2)."h.pdf",true);
 
 ?>  
+ 
