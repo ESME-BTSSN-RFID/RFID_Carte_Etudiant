@@ -187,7 +187,10 @@ if (isset($_SESSION['idUser'])){
                                     echo utf8_encode($line[2])."</br>";
                                     echo utf8_encode($line[1])."</br>";
                                     echo utf8_decode($line[3])."</br>";
-                                    echo utf8_decode($line[7]); ?>
+                                    echo utf8_decode($line[7]); 
+                                    
+                                    if($idUser == 0){
+                                    ?>
 
                                     <form action='../PAGES/Resultat_Modifier.php' method='GET'>
                                         </br><button name='idSeance' value='<?php echo $line[0]?>'>Modifier</button>
@@ -199,7 +202,7 @@ if (isset($_SESSION['idUser'])){
                                     
 
                                     <?php 
-                        
+                                    }
                                     if($line[6] >1){
                                         for($k=2; $k<=$line[6]; $k++){
                                             $new_hour = $line[4];
