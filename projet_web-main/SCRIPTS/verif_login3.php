@@ -22,6 +22,7 @@ if((isset($_POST['login'])) && (isset($_POST['password']))){
         header("Location: ../index.php?error=Le mot de passe est requis");
         exit();
     }
+
     else {        
         $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
 

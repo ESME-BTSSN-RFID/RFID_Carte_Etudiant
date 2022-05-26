@@ -89,24 +89,43 @@ if (isset($_SESSION['idUser'])){
 
 
             ?>
+            <table>
+                <tr>
+                    <td>
+                        <form action="../SCRIPTS/edt.php" action="GET" id="form">
+                            <select name="classe">
+                                <?php
+                                    foreach($result as $row){
+                                        ?>
+                                        <option value="<?php echo $row['idClass'];?>"<?php if(isset($_GET['classe'])){if(strcmp($_GET['classe'],$row['idClass']) == 0){ echo "selected";}}?>><?php echo $row['label'];?></option>
+                                        <?php
+                                    }
+                                ?>
+                        
+                            </select>
+                            
+                            <input type="week" name="week" value="<?php echo $week_input ?>">
+                        
+                        </form>
+                    </td>
+                    <td>
+                        <?php $dto = new DateTime();
+                        $first_of_week = $dto->setISODate($year, $week)->format('Y-m-d');
+                        $last_of_week = $dto->modify('+6 days')->format('Y-m-d');
 
-            <form action="../SCRIPTS/edt.php" action="GET">
-                <select name="classe" >
-                    <option value="">--Choisir une classe--</option>
-                    <?php
-                        foreach($result as $row){
-                            ?>
-                            <option value="<?php echo $row['idClass'];?>"><?php echo $row['label'];?></option>
-                            <?php
-                        }
-                    ?>
+                        $month_array = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+                        echo "<p>Semaine du ".substr($first_of_week, 8, 2)." ".$month_array[substr($first_of_week, 5, 2)-1]." au ".substr($last_of_week, 8, 2)." ".$month_array[substr($last_of_week, 5, 2)-1]."</p>";
+                        ?>
+                    </td>
+                </tr>
+            </table>
             
-                </select>
-                
-                <input type="week" name="week" value="<?php echo $week_input ?>">
-                <input type="submit" value="Choisir">
-            
-            </form>
+            <script type="text/javascript">
+                var form = document.querySelector('form');
+                form.addEventListener('change', function() {
+                    form.submit();
+                });
+            </script>
 
             <table class="tableau">
                 <tr>
@@ -121,13 +140,6 @@ if (isset($_SESSION['idUser'])){
                 </tr>
 
                 <?php
-
-                $dto = new DateTime();
-                $first_of_week = $dto->setISODate($year, $week)->format('Y-m-d');
-                $last_of_week = $dto->modify('+6 days')->format('Y-m-d');
-
-                $month_array = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
-                echo "<p>Semaine du ".substr($first_of_week, 8, 2)." ".$month_array[substr($first_of_week, 5, 2)-1]." au ".substr($last_of_week, 8, 2)." ".$month_array[substr($last_of_week, 5, 2)-1]."</p>";
 
                 $req = "SELECT s.idSeance, p.nom, m.matiere, c.label, s.heureDebut, s.heureFin, s.duree, k.room FROM seance s INNER JOIN prof p ON s.idProf=p.idProf INNER JOIN cours m ON s.idCours=m.idCours INNER JOIN salle k ON s.idSalle=k.idSalle INNER JOIN classe c ON s.idClass=c.idClass WHERE heureDebut>='$first_of_week''T00:00' AND heureFin<='$last_of_week''T23:59' AND s.idClass = $classe ORDER BY heureDebut";
                 $result=requeteSelect($cnx, $req);

@@ -93,21 +93,26 @@ if (isset($_SESSION['idUser'])){
 
                 <form action="../SCRIPTS/edt2.php" action="GET">
                     <select name="classe" >
-                        <option value="">--Choisir une classe--</option>
                         <?php
                             foreach($result as $row){
                                 ?>
-                                <option value="<?php echo $row['idClass'];?>"><?php echo $row['label'];?></option>
+                                <option value="<?php echo $row['idClass'];?>" <?php if(isset($_GET['classe'])){if(strcmp($_GET['classe'],$row['idClass']) == 0){ echo "selected";}}?>><?php echo $row['label'];?></option>
                                 <?php
                             }
                         ?>
                 
                     </select>
                     
-                    <input type="week" name="week" value="<?php echo $week_input ?>">
-                    <input type="submit" value="Choisir">
+                    <input type="week" name="week" value="<?php echo $week_input ?>">   
                 
                 </form>
+
+                <script type="text/javascript">
+                    var form = document.querySelector('form');
+                    form.addEventListener('change', function() {
+                        form.submit();
+                    });
+                </script>
 
                 <table class="tableau">
                     <tr>
