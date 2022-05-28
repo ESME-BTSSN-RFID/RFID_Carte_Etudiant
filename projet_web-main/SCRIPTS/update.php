@@ -1,6 +1,6 @@
 <?php
 session_start();
-$val=$_SESSION['val'];
+
 if(isset($_SESSION['idUser'])){
     if($_SESSION['idUser'] == 0){
         require_once('Modele.php');
