@@ -27,7 +27,7 @@ services:
     links:
       - db
     volumes:
-      - .:/var/www/html/
+      - ./projet_web-main:/var/www/html/
     ports:
       - "8080:80"
     stdin_open: true
