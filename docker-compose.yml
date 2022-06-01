@@ -11,7 +11,7 @@ services:
     ports:
       - "9906:3306"
     volumes:
-      - .projet_btssnir:/var/lib/mysql/
+      - ./projet_web-main/.projet_btssnir:/var/lib/mysql/
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     links:
@@ -23,7 +23,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASS}
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
   web:
-    build: ../
+    build: ./
     links:
       - db
     volumes:
