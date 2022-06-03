@@ -5,7 +5,7 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_DATABASE: projet_btssnir
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
     ports:
