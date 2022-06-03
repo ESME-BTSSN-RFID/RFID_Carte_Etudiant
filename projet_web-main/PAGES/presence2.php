@@ -72,6 +72,7 @@ if (isset($_SESSION['idUser'])){
                             <th>Nom</th>
                             <th>Prénom</th>
                             <th>Présent(e)</th>
+                            <th>Retard</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,8 +86,11 @@ if (isset($_SESSION['idUser'])){
             $delta = $_GET['hour'] + $_GET['duree'];
             $class = $_GET['idClass'];
             $checked = "SELECT idCarteEtudiant FROM eleve e INNER JOIN scan s ON e.idCarteEtudiant=s.uid WHERE s.time BETWEEN '".$_GET['date'] ." ".$_GET['hour'].":00:00' AND '".$_GET['date']." ".$delta.":00:00' AND e.idClass=$class";
+            $late = "SELECT idCarteEtudiant FROM eleve e INNER JOIN scan s ON e.idCarteEtudiant=s.uid WHERE s.time BETWEEN '".$_GET['date'] ." ".$_GET['hour'].":15:00' AND '".$_GET['date']." ".$delta.":00:00' AND e.idClass=$class";
             $result_check = requeteSelect($cnx, $checked);
+            $late_check = requeteSelect($cnx, $late);
             $result_check = $result_check -> fetchAll();
+            $late_check = $late_check -> fetchAll(PDO::FETCH_ASSOC);
             echo "<br>";
             $presence = array($classe);
             foreach($result as $ligne){
@@ -106,6 +110,19 @@ if (isset($_SESSION['idUser'])){
                                 }
                             }
                             
+                            ?>
+                            
+                            ></td>
+                            <td><input type="checkbox" disabled
+                            <?php
+                            foreach ($late_check as $ligne_late) {
+                                if($ligne_late['idCarteEtudiant'] == $ligne['idCarteEtudiant']){
+                                    echo "checked";
+                                    array_push($presence, $ligne['idCarteEtudiant']);
+                                    break;
+                                }
+                                
+                            }
                             ?>
                             
                             ></td>

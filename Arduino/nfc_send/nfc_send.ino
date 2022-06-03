@@ -15,14 +15,11 @@ MFRC522::MIFARE_Key key;
 String uidString;
 
 // Replace with your network credentials
-const char* ssid     = "SilverFlamingo";
-const char* password = "uNBN7DsuVQ";
-
-//const char* ssid     = "Arduino";
-//const char* password = "hugooooo";
+const char* ssid     = "Wifi_AHHV";
+const char* password = "Projet_BTS2SNIR";
 
 // REPLACE with your Domain name and URL path or IP address with path
-const char* serverName = "http://10.10.10.60/BTS2/projet_web-main/SCRIPTS/esp_insert.php";
+const char* serverName = "http://192.168.50.1:8080/SCRIPTS/esp_insert.php";
 
 
 void setup() {
