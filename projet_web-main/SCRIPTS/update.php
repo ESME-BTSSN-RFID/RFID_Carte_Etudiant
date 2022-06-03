@@ -1,12 +1,12 @@
 <?php
 session_start();
-$val=$_SESSION['val'];
+
 if(isset($_SESSION['idUser'])){
     if($_SESSION['idUser'] == 0){
         require_once('Modele.php');
         require_once('DotEnv.php');
 
-        (new DotEnv('../.env'))->load();
+        (new DotEnv('/home/.env'))->load();
         $DB_HOST = getenv('DB_HOST');
         $DB_NAME = getenv('DB_NAME');
         $DB_USER = getenv('DB_USER');

@@ -5,13 +5,13 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_DATABASE: projet_btssnir
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
     ports:
       - "9906:3306"
     volumes:
-      - .projet_btssnir:/var/lib/mysql/
+      - ./projet_web-main/.projet_btssnir:/var/lib/mysql/
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     links:
@@ -23,11 +23,11 @@ services:
       MYSQL_PASSWORD: ${DB_PASS}
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
   web:
-    build: ../
+    build: ./
     links:
       - db
     volumes:
-      - .:/var/www/html/
+      - ./projet_web-main:/var/www/html/
     ports:
       - "8080:80"
     stdin_open: true
