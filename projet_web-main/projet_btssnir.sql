@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Hôte : db
--- Généré le : sam. 28 mai 2022 à 16:48
--- Version du serveur : 5.7.37
--- Version de PHP : 8.0.15
+-- Hôte : 127.0.0.1:3306
+-- Généré le : mar. 15 mars 2022 à 15:22
+-- Version du serveur :  5.7.31
+-- Version de PHP : 7.3.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,11 +27,13 @@ SET time_zone = "+00:00";
 -- Structure de la table `administration`
 --
 
-CREATE TABLE `administration` (
+DROP TABLE IF EXISTS `administration`;
+CREATE TABLE IF NOT EXISTS `administration` (
   `idAdmin` int(11) NOT NULL,
   `nom` varchar(100) NOT NULL,
   `prenom` varchar(100) NOT NULL,
-  `classe` varchar(50) NOT NULL
+  `classe` varchar(50) NOT NULL,
+  PRIMARY KEY (`idAdmin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -40,9 +42,11 @@ CREATE TABLE `administration` (
 -- Structure de la table `classe`
 --
 
-CREATE TABLE `classe` (
+DROP TABLE IF EXISTS `classe`;
+CREATE TABLE IF NOT EXISTS `classe` (
   `idClass` int(11) NOT NULL,
-  `label` varchar(20) NOT NULL
+  `label` varchar(20) NOT NULL,
+  PRIMARY KEY (`idClass`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -59,9 +63,11 @@ INSERT INTO `classe` (`idClass`, `label`) VALUES
 -- Structure de la table `cours`
 --
 
-CREATE TABLE `cours` (
+DROP TABLE IF EXISTS `cours`;
+CREATE TABLE IF NOT EXISTS `cours` (
   `idCours` int(11) NOT NULL,
-  `matiere` varchar(100) NOT NULL
+  `matiere` varchar(100) NOT NULL,
+  PRIMARY KEY (`idCours`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -82,11 +88,14 @@ INSERT INTO `cours` (`idCours`, `matiere`) VALUES
 -- Structure de la table `eleve`
 --
 
-CREATE TABLE `eleve` (
-  `idCarteEtudiant` varchar(11) NOT NULL,
+DROP TABLE IF EXISTS `eleve`;
+CREATE TABLE IF NOT EXISTS `eleve` (
+  `idCarteEtudiant` varchar(5) NOT NULL,
   `nom` varchar(50) NOT NULL,
   `prenom` varchar(50) NOT NULL,
-  `idClass` int(11) NOT NULL
+  `idClass` int(11) NOT NULL,
+  PRIMARY KEY (`idCarteEtudiant`),
+  KEY `idClass` (`idClass`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -94,16 +103,13 @@ CREATE TABLE `eleve` (
 --
 
 INSERT INTO `eleve` (`idCarteEtudiant`, `nom`, `prenom`, `idClass`) VALUES
-('1234', 'LECLERC', 'Charles', 1),
-('123456789', 'Savaresse', 'Melvine', 2),
+('1234', 'Bon bah', 'go au naan', 1),
+('17', 'Cridlig', 'Hugo', 1),
 ('202', 'Vercelonne', 'Hugo', 1),
-('45', 'VETTEL', 'Sebastian', 2),
-('548', 'ALONSO', 'Fernando', 2),
-('74 8e 61 27', 'CRIDLIG', 'Hugp', 2),
+('548', 'Ã©Ã©Ã©Ã©', 'Ã©Ã©Ã©Ã©', 1),
 ('852', 'De almeida vaz', 'Alexandre', 1),
-('96', 'GARROS', 'Roland', 2),
-('AAAIFJ', 'VERSTAPPEN', 'Max', 1),
-('DHJUE', 'PENG', 'Michel', 2);
+('96', 'LESGOO', 'AU NAAN', 1),
+('ABCD1', 'Shaw', 'Martin', 1);
 
 -- --------------------------------------------------------
 
@@ -111,18 +117,19 @@ INSERT INTO `eleve` (`idCarteEtudiant`, `nom`, `prenom`, `idClass`) VALUES
 -- Structure de la table `prof`
 --
 
-CREATE TABLE `prof` (
-  `idProf` int(11) NOT NULL,
+DROP TABLE IF EXISTS `prof`;
+CREATE TABLE IF NOT EXISTS `prof` (
+  `idProf` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(50) NOT NULL,
-  `prenom` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `prenom` varchar(50) NOT NULL,
+  PRIMARY KEY (`idProf`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `prof`
 --
 
 INSERT INTO `prof` (`idProf`, `nom`, `prenom`) VALUES
-(0, 'admin', 'admin'),
 (1, 'WANG', 'Victor');
 
 -- --------------------------------------------------------
@@ -131,9 +138,11 @@ INSERT INTO `prof` (`idProf`, `nom`, `prenom`) VALUES
 -- Structure de la table `salle`
 --
 
-CREATE TABLE `salle` (
+DROP TABLE IF EXISTS `salle`;
+CREATE TABLE IF NOT EXISTS `salle` (
   `idSalle` int(11) NOT NULL,
-  `room` varchar(10) NOT NULL
+  `room` varchar(10) NOT NULL,
+  PRIMARY KEY (`idSalle`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -152,31 +161,24 @@ INSERT INTO `salle` (`idSalle`, `room`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `scan`
---
-
-CREATE TABLE `scan` (
-  `id` int(11) NOT NULL,
-  `uid` varchar(20) NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `seance`
 --
 
-CREATE TABLE `seance` (
-  `idSeance` int(11) NOT NULL,
+DROP TABLE IF EXISTS `seance`;
+CREATE TABLE IF NOT EXISTS `seance` (
+  `idSeance` int(11) NOT NULL AUTO_INCREMENT,
   `idClass` int(11) NOT NULL,
   `idCours` int(11) NOT NULL,
   `idProf` int(11) NOT NULL,
   `idSalle` int(11) NOT NULL,
   `heureDebut` varchar(20) NOT NULL,
   `heureFin` varchar(20) NOT NULL,
-  `duree` int(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `duree` int(4) NOT NULL,
+  PRIMARY KEY (`idSeance`),
+  KEY `idClass` (`idClass`),
+  KEY `idCours` (`idCours`),
+  KEY `idProf` (`idProf`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `seance`
@@ -187,26 +189,36 @@ INSERT INTO `seance` (`idSeance`, `idClass`, `idCours`, `idProf`, `idSalle`, `he
 (28, 2, 1, 1, 1, '2022-03-08T16:10', '2022-03-08T18:10', 2),
 (29, 1, 5, 1, 3, '2022-03-01T13:27', '2022-03-13T14:27', 1),
 (30, 1, 1, 1, 3, '2022-03-03T13:00', '2022-03-03T14:00', 1),
-(35, 1, 2, 1, 3, '2022-03-16T16:00', '2022-03-18T18:00', 2),
-(37, 2, 3, 1, 3, '2022-03-16T15:00', '2022-03-16T18:00', 3),
-(38, 1, 1, 1, 2, '2022-03-14T11:00', '2022-03-14T14:00', 3),
-(39, 1, 1, 1, 1, '2022-03-25T11:00', '2022-03-25T13:00', 2),
-(41, 1, 1, 1, 1, '2022-03-29T11:00', '2022-03-29T13:00', 2),
-(42, 1, 3, 1, 2, '2022-03-30T10:00', '2022-03-30T12:00', 2),
-(43, 1, 5, 1, 5, '2022-04-02T11:00', '2022-04-02T15:00', 4),
-(44, 1, 1, 1, 1, '2022-04-04T10:00', '2022-04-04T12:00', 2),
-(46, 1, 1, 1, 1, '2022-04-11T18:00', '2022-04-11T19:00', 1),
-(47, 1, 1, 1, 2, '2022-04-19T09:00', '2022-04-19T13:00', 4),
-(49, 1, 2, 1, 2, '2022-04-20T10:00', '2022-04-20T13:00', 3),
-(50, 1, 1, 1, 4, '2022-04-21T14:00', '2022-04-21T17:00', 3),
-(51, 1, 1, 1, 1, '2022-04-25T12:00', '2022-04-25T14:00', 2),
-(52, 1, 2, 1, 1, '2022-05-04T10:00', '2022-05-04T12:00', 2),
-(53, 1, 1, 1, 1, '2022-05-09T10:00', '2022-05-09T12:00', 2),
-(54, 1, 1, 1, 4, '2022-05-18T09:00', '2022-05-18T11:00', 2),
-(55, 1, 2, 1, 1, '2022-05-24T15:00', '2022-05-24T17:00', 2),
-(56, 2, 1, 1, 1, '2022-05-27T13:00', '2022-05-27T16:00', 3),
-(57, 1, 3, 1, 1, '2022-05-25T13:00', '2022-05-25T17:00', 4),
-(58, 2, 1, 1, 5, '2022-05-30T12:00', '2022-05-30T15:00', 3);
+(34, 1, 1, 1, 2, '2022-03-14T10:00', '2022-03-14T12:00', 2),
+(35, 1, 2, 1, 3, '2022-03-16T16:00', '2022-03-18T18:00', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `test`
+--
+
+DROP TABLE IF EXISTS `test`;
+CREATE TABLE IF NOT EXISTS `test` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `test`
+--
+
+INSERT INTO `test` (`id`, `uid`) VALUES
+(1, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(2, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(3, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(4, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(5, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(6, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(7, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(8, 'RFID TAG ID:74 8E 61 27 \r\n'),
+(9, 'RFID TAG ID:74 8E 61 27 \r\n');
 
 -- --------------------------------------------------------
 
@@ -214,106 +226,20 @@ INSERT INTO `seance` (`idSeance`, `idClass`, `idCours`, `idProf`, `idSalle`, `he
 -- Structure de la table `utilisateur`
 --
 
-CREATE TABLE `utilisateur` (
+DROP TABLE IF EXISTS `utilisateur`;
+CREATE TABLE IF NOT EXISTS `utilisateur` (
   `login` varchar(100) NOT NULL,
-  `password` char(60) NOT NULL,
-  `idProf` int(11) NOT NULL DEFAULT '0'
+  `password` varchar(50) NOT NULL,
+  PRIMARY KEY (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`login`, `password`, `idProf`) VALUES
-('hugo', '$2y$10$9ALmyyrQicNXvZh/734IT.UrGtgE/H27tKZsEHoRAcVxi4bAccZhm', 1),
-('user', '$2y$10$MyS5RLrtOMXoASLNKZOEKuzGsl5PQvZAGx3/9WOoipC8BV/jNYOFy', 0),
-('vwang', '$2y$10$kn8CN8w4SkpJdWjMn6F5leC2HIHIp1dTILEYhf0u7bBOEqV1LKWta', 1);
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `administration`
---
-ALTER TABLE `administration`
-  ADD PRIMARY KEY (`idAdmin`);
-
---
--- Index pour la table `classe`
---
-ALTER TABLE `classe`
-  ADD PRIMARY KEY (`idClass`);
-
---
--- Index pour la table `cours`
---
-ALTER TABLE `cours`
-  ADD PRIMARY KEY (`idCours`);
-
---
--- Index pour la table `eleve`
---
-ALTER TABLE `eleve`
-  ADD PRIMARY KEY (`idCarteEtudiant`),
-  ADD KEY `idClass` (`idClass`);
-
---
--- Index pour la table `prof`
---
-ALTER TABLE `prof`
-  ADD PRIMARY KEY (`idProf`);
-
---
--- Index pour la table `salle`
---
-ALTER TABLE `salle`
-  ADD PRIMARY KEY (`idSalle`);
-
---
--- Index pour la table `scan`
---
-ALTER TABLE `scan`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `uid` (`uid`);
-
---
--- Index pour la table `seance`
---
-ALTER TABLE `seance`
-  ADD PRIMARY KEY (`idSeance`),
-  ADD KEY `idClass` (`idClass`),
-  ADD KEY `idCours` (`idCours`),
-  ADD KEY `idProf` (`idProf`);
-
---
--- Index pour la table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  ADD PRIMARY KEY (`login`),
-  ADD KEY `idProf` (`idProf`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `prof`
---
-ALTER TABLE `prof`
-  MODIFY `idProf` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `scan`
---
-ALTER TABLE `scan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1016;
-
---
--- AUTO_INCREMENT pour la table `seance`
---
-ALTER TABLE `seance`
-  MODIFY `idSeance` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+INSERT INTO `utilisateur` (`login`, `password`) VALUES
+('hugo', 'hugo'),
+('user', 'root');
 
 --
 -- Contraintes pour les tables déchargées
@@ -326,12 +252,6 @@ ALTER TABLE `eleve`
   ADD CONSTRAINT `eleve_ibfk_1` FOREIGN KEY (`idClass`) REFERENCES `classe` (`idClass`);
 
 --
--- Contraintes pour la table `scan`
---
-ALTER TABLE `scan`
-  ADD CONSTRAINT `scan_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `eleve` (`idCarteEtudiant`);
-
---
 -- Contraintes pour la table `seance`
 --
 ALTER TABLE `seance`
@@ -339,12 +259,6 @@ ALTER TABLE `seance`
   ADD CONSTRAINT `seance_ibfk_2` FOREIGN KEY (`idCours`) REFERENCES `cours` (`idCours`),
   ADD CONSTRAINT `seance_ibfk_3` FOREIGN KEY (`idProf`) REFERENCES `prof` (`idProf`),
   ADD CONSTRAINT `seance_ibfk_4` FOREIGN KEY (`idProf`) REFERENCES `salle` (`idSalle`);
-
---
--- Contraintes pour la table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  ADD CONSTRAINT `utilisateur_ibfk_1` FOREIGN KEY (`idProf`) REFERENCES `prof` (`idProf`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -3,7 +3,7 @@ session_start();
 include_once('../SCRIPTS/Modele.php');
 require_once('../SCRIPTS/DotEnv.php');
 
-(new DotEnv('/home/.env'))->load();
+(new DotEnv('../.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -12,9 +12,6 @@ $DB_PASS = getenv('DB_PASS');
 if (isset($_SESSION['idUser'])){
     $idUser = $_SESSION['idUser'];
     $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
-   
-    $req = "SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass;"; 
-    $result=requeteSelect($cnx, $req);
     
 ?>
 
@@ -68,8 +65,52 @@ if (isset($_SESSION['idUser'])){
     <?php if (isset($_GET['succes'])){ ?>
      		<p class="succes"><?php echo $_GET['succes']; ?></p>
      	    <?php } ?>
-             
-        <table class="tableau">
+
+
+            <?php
+                $cnx=Connexion($DB_HOST,$DB_NAME,$DB_USER,$DB_PASS);
+                $req = "SELECT * FROM classe";
+                $result=requeteSelect($cnx, $req);     
+                
+                if (isset($_GET['error'])){
+                    echo "<p class='error'>".$_GET['error']."</p>";
+                }
+                
+                if(isset($_GET['classe'])){
+                    $classe = $_GET['classe'];
+                }
+
+            ?>
+
+<table style="margin: auto;">
+<tr>
+    <td>
+        <form action="../SCRIPTS/liste_classe.php" action="POST" id="form">
+            <select name="classe">
+                <?php
+                    foreach($result as $row){
+                        ?>
+                        <option value="<?php echo $row['idClass'];?>"<?php if(isset($_GET['classe'])){if(strcmp($_GET['classe'],$row['idClass']) == 0){ echo "selected";}}?>><?php echo $row['label'];?></option>
+                        <?php
+                    }?>
+            </select>
+        </form>
+
+        <script type="text/javascript">
+                var form = document.querySelector('form');
+                form.addEventListener('change', function() {
+                    form.submit();
+                });
+            </script>
+    </td>
+</tr>
+</table>
+                    <?php
+                    $classe = $_GET['classe'];
+                    $req = "SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass WHERE classe.idClass = $classe";
+                    $result=requeteSelect($cnx, $req);?>
+        
+         <table class="tableau">
             <tr>
                 <th>Carte Etudiant</th>
                 <th>Nom</th>

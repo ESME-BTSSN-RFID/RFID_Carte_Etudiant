@@ -4,7 +4,7 @@ require_once('Modele.php');
 require_once('DotEnv.php');
 require('../libs/fpdf.php');
 
-(new DotEnv('/home/.env'))->load();
+(new DotEnv('../.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
