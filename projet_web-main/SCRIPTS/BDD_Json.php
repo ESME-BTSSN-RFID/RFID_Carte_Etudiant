@@ -2,7 +2,7 @@
 
 	try{
 			$pdo_option[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-			$bdd = new PDO ('mysql:host=10.4.253.171, dbname=projet_btssnir', 'root', $pdo_options);
+			$bdd = new PDO ('mysql:host=192.168.50.1, dbname=projet_btssnir', 'root', $pdo_options);
 
 			$sql = 'SELECT nom, prenom, presence FROM eleve;';
 			$response = $bdd->query($sql);

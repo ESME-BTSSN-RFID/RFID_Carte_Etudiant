@@ -56,7 +56,7 @@
                 </div>
             </div>
             <a href="../PAGES/presence.php">Fiche de présence</a>
-            <a href="../SCRIPTS/Logout.php">Deconnexion</a>
+            <a href="../SCRIPTS/Logout.php">Déconnexion</a>
         </nav>
     </header>
 

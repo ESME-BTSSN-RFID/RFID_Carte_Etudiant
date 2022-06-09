@@ -3,7 +3,7 @@ session_start();
 include_once('../SCRIPTS/Modele.php');
 require_once('../SCRIPTS/DotEnv.php');
 
-(new DotEnv('../.env'))->load();
+(new DotEnv('/home/.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -55,7 +55,7 @@ if (isset($_SESSION['idUser'])){
 
             
             <a href="../PAGES/presence.php">Fiche de présence</a>
-            <a href="../SCRIPTS/Logout.php">Deconnexion</a>
+            <a href="../SCRIPTS/Logout.php">Déconnexion</a>
         </nav>
         </header>
 

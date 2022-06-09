@@ -3,7 +3,7 @@ session_start();
 include_once('../SCRIPTS/Modele.php');
 require_once('../SCRIPTS/DotEnv.php');
 
-(new DotEnv('../.env'))->load();
+(new DotEnv('/home/.env'))->load();
 $DB_HOST = getenv('DB_HOST');
 $DB_NAME = getenv('DB_NAME');
 $DB_USER = getenv('DB_USER');
@@ -58,7 +58,7 @@ if (isset($_SESSION['idUser'])){
 
             
             <a href="../PAGES/presence.php">Fiche de présence</a>
-            <a href="../SCRIPTS/Logout.php">Deconnexion</a>
+            <a href="../SCRIPTS/Logout.php">Déconnexion</a>
         </nav>
     </header>
     <section>
@@ -82,33 +82,41 @@ if (isset($_SESSION['idUser'])){
 
             ?>
 
-<table style="margin: auto;">
-<tr>
-    <td>
-        <form action="../SCRIPTS/liste_classe.php" action="POST" id="form">
-            <select name="classe">
-                <?php
-                    foreach($result as $row){
-                        ?>
-                        <option value="<?php echo $row['idClass'];?>"<?php if(isset($_GET['classe'])){if(strcmp($_GET['classe'],$row['idClass']) == 0){ echo "selected";}}?>><?php echo $row['label'];?></option>
+    <table style="margin: auto;">
+        <tr>
+            <td>
+                <form action="../SCRIPTS/liste_classe.php" action="GET" id="form">
+                    <select name="classe">
                         <?php
-                    }?>
-            </select>
-        </form>
+                            foreach($result as $row){
+                        ?>
+                            <option value="<?php echo $row['idClass'];?>"<?php if(isset($_GET['classe'])){if(strcmp($_GET['classe'],$row['idClass']) == 0){ echo "selected";}}?>><?php echo $row['label'];?></option>
+                        <?php
+                        }?>
+                    </select>
 
-        <script type="text/javascript">
-                var form = document.querySelector('form');
-                form.addEventListener('change', function() {
-                    form.submit();
-                });
-            </script>
-    </td>
-</tr>
-</table>
+                    <script type="text/javascript">
+                        var form = document.querySelector('form');
+                        form.addEventListener('change', function() {
+                        form.submit();
+                        });
+                    </script>
+
+                </form>
+
                     <?php
-                    $classe = $_GET['classe'];
+                    if(isset($_GET['classe'])){
+                        $classe = $_GET['classe']; 
+                    }
+                    else{
+                        $classe=1;
+                    }
+                    
                     $req = "SELECT idCarteEtudiant, eleve.nom, prenom, classe.label FROM eleve INNER JOIN classe ON eleve.idClass = classe.idClass WHERE classe.idClass = $classe";
                     $result=requeteSelect($cnx, $req);?>
+            </td>
+        </tr>
+    </table>
         
          <table class="tableau">
             <tr>
